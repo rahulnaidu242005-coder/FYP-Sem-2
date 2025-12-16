@@ -1,0 +1,7 @@
+[project]
+name = "FYP NW Integration with chatbot AI"
+version = "0.1.0"
+description = "Final Year Project: Network integration with chatbot AI"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
