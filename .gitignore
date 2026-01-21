@@ -1,6 +1,6 @@
 tmp/
 chroma_langchain_db/
-.venv
+.idea/
 __pycache__/
 Simple_RAG_Model.py
 uv.lock
