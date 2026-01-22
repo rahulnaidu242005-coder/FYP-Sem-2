@@ -5,3 +5,4 @@ __pycache__/
 Simple_RAG_Model.py
 uv.lock
 .env
+app.log
