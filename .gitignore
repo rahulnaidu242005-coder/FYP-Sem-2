@@ -4,3 +4,4 @@ chroma_langchain_db/
 __pycache__/
 Simple_RAG_Model.py
 uv.lock
+.env
