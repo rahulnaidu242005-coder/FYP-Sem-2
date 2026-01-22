@@ -1,0 +1,354 @@
+key,definition
+access.point,Access Point
+accesses,Accesses
+action,Action
+ad.computer.dst,Active Directory Workstation Destination
+ad.computer.src,Active Directory Workstation Source
+ad.domain.dst,Active Directory Domain Destination
+ad.domain.src, Active Directory Domain Source
+ad.username.dst,Active Directory Username Destination
+ad.username.src,Active Directory Username Source
+agent.id,Agent Id
+alert,Alerts
+alert.id,Alert ID
+alias.host,Host ID
+alias.host.hash,Hostname Aliases Hash
+alias.ip,IP Aliases
+alias.ipv6,IPv6 Alliases
+alias.mac,MAC Alias Record
+analysis.all,All Analysis Keys
+analysis.context,Why should I care?
+analysis.desc,What is this?
+analysis.file,File Analysis
+analysis.next,What should I do?
+analysis.service,Service Analysis
+analysis.session,Session Analysis
+analysis.source,How did this get here?
+appid,Application Identification
+asset.bu,Business Unit - RSA Archer IT Security and Risk Management
+asset.comp,Compliance - RSA Archer IT Security and Risk Management
+asset.crit,Criticality - RSA Archer IT Security and Risk Management
+asset.desc,Description- RSA Archer IT Security and Risk Management
+asset.escalate,Escalation - RSA Archer IT Security and Risk Management
+asset.fac,Facility - RSA Archer IT Security and Risk Management
+asset.group,Group - RSA Archer IT Security and Risk Management
+asset.risk,Risk - RSA Archer IT Security and Risk Management
+asset.type,Type - RSA Archer IT Security and Risk Management
+attachment,Attachment
+attack.all,All ATT&CK Keys
+attack.tactic,ATT&CK Tactic
+attack.technique,ATT&CK Technique
+attack.tid,ATT&CK Technique ID
+auth.method,Auth Method - RSA SecurID Access
+autorun.type,Autorun Type
+boc,Behaviors of Compromise
+browser,Browsers
+bytes.src,Bytes Sent
+capture.port,Capture Interface
+category,Category
+cert.ca,Certificate Authority
+cert.checksum,Certificate Checksum
+cert.common,Certificate Common Name
+cert.common.dst, Certificate Common Name
+cert.common.src, Certificate Common Name Sourc
+cert.subject,Certifcate Subject
+cert.thumbprint,Certificate Thumbprint
+chat,Chat
+checksum,Checksum
+checksum.algo,Checksum Algorithm
+checksum.all,All Checksum Keys
+checksum.dst,Target Checksum
+checksum.src,Source Checksum
+cid,Concentrator Source
+city,City
+city.dst,Destination City
+city.src,Source City
+client,Agent  
+client.all,All Client Keys
+community.id,Community ID
+compromise.all,All Compromise Keys
+content,Content Type
+content.type,Content Type
+context,Context
+context.all,All Context Keys
+context.dst,Context Destination
+context.src,Context Source
+country,Country
+country.dst,Destination Country
+country.src,Source Country
+crypto,Cipher Name
+database,Database Name
+device.class,Device Class
+device.group,Event Source Group
+device.host,Device Host
+device.ip,Device IP
+device.ipv6,Device IPv6
+device.name,Device Name
+device.names,Device Names
+device.type,Device Type
+did,Decoder Source
+dinterface,Destination Interface
+dir.path,Directory Path
+dir.path.all,All Directory Path Keys
+dir.path.dst,Directory Path Destination
+dir.path.src,Directory Path Source
+direction,Direction
+directory,Directory
+directory.all,All Directory Keys
+directory.dst,Target File Directory
+directory.src,Source File Directory
+disposition,Disposition
+dn,Domain OU
+domain,Domain
+domain.all,All Domain Keys
+domain.dst,Destination Domain
+domain.src,Source Domain
+dtransaddr,Destination Translated Address
+dtransport,Translated Destination Port
+ec.activity,Event Activity
+ec.all,All Event Catagorization Keys
+ec.outcome,Event Outcome
+ec.subject,Event Subject
+ec.theme,Event Theme
+ecat.ctime,NWE Connectiontime
+ecat.stime,NWE Scantime
+email,E-mail Address
+email.all,All Email Address Keys
+email.dst,To Email Address
+email.src,From Email Address
+entropy.req,Entropy Request (Client)
+entropy.res,Entropy Response (Server)
+eoc,Enablers of Compromise
+error,Errors
+eth.all,All Ethernet Address Keys
+eth.dst,Destination MacAddress
+eth.src,Source MacAddress
+eth.type,Ethernet Protocol
+event.cat.name,Event Category Name
+event.class,Event Classification
+event.computer,Event Computer
+event.desc,Event Description
+event.source,Event Source
+event.state,Event State
+event.time,Event Time
+event.type,Event Type
+event.user,Event User
+extension,Extension
+fd.cat,Custom Feed Category
+fd.desc,Custom Feed Description
+fd.name,Custom Feed Name
+feed.category,Feed Category
+feed.desc,Feed Description
+feed.name,Feed Name
+file.attributes,File Attributes
+file.cat,File Category
+file.cat.dst,File Category Destination
+file.cat.src,File Category Source
+file.entropy,File Entropy
+file.vendor,File Vendor
+filename,Filename
+filename.all,All Filename Keys
+filename.dst,Filename Destination
+filename.int,Filename
+filename.size,File Size
+filename.src,Filename Source
+filetype,Forensic Fingerprint
+filter,Filter
+forward.ip,Event Relay IPv4 Address
+forward.ipv6,Event Relay IPv6 Address
+found,Found Search
+fqdn,FQDN
+fullname,Full Name
+fullname.all,All Fullname Keys
+fullname.dst,Full Name Dest
+fullname.src,Full Name Source
+function,Function
+gateway,Gateway
+group,Group
+host.all,All Hostname Keys
+host.dst,Destination Hostname
+host.orig,Hostname Originating
+host.role,Host Role
+host.src,Source Host
+host.state,Machine State
+identity.acctrev,Last Account Review - RSA Identity Governance and Lifecycle
+identity.acctrsk,Account Risk - RSA Identity Governance and Lifecycle
+identity.acct_o,Service Account Owner - RSA Identity Governance and Lifecycle
+identity.app,Application - RSA Identity Governance and Lifecycle
+identity.cpwd,Last Password Change - RSA Identity Governance and Lifecycle
+identity.dept,Department - RSA Identity Governance and Lifecycle
+identity.emptype,Employee Type - RSA Identity Governance and Lifecycle
+identity.ll,Last Login - RSA Identity Governance and Lifecycle
+identity.mgr,Manager - RSA Identity Governance and Lifecycle
+identity.name,Full Name - RSA Identity Governance and Lifecycle
+identity.perm,Permissions - RSA Identity Governance and Lifecycle
+identity.svcacct,Service Account - RSA Identity Governance and Lifecycle
+info,Info
+interface,Interface
+inv.all,All Investigation Keys
+inv.category,Investigation Category
+inv.context,Investigation Context
+ioc,Indicators of Compromise
+ioc.score,IOC Score
+ip.addr,IP Address
+ip.all,All IPv4 Keys
+ip.dst,Destination IP address
+ip.dstport,Destination Port
+ip.orig,IP Address Originating
+ip.proto,IP Protocol
+ip.src,Source IP Address
+ip.srcport,Source Port
+ipv6.all,All IPv6 Keys
+ipv6.dst,Destination IPv6 address
+ipv6.orig,IP Address v6 Originating
+ipv6.proto,IP V6 Protocol
+ipv6.src,Source IPv6 Address
+ja3,JA3 Fingerprint
+ja3s,JA3S Fingerprint
+ja4,JA4 Fingerprint
+language,Languages
+latdec,Decimal Latitude
+latdec.dst,Destination Latitude
+latdec.src,Source Latitude
+lc.cid,Collector ID
+lifetime,Session Lifetime
+link,Link to Data
+loc.desc,Location
+location,Location
+location.dst,Destination Location
+location.src,Source Location
+logon.type,Logon Type
+logon.type.desc,Description of Logon Type
+longdec,Decimal Longitude
+longdec.dst,Destination Longitude
+longdec.src,Source Longitude
+mail.id,Mail ID
+match,Match Search Item
+mcb.req,Most Common Byte Request
+mcb.res, Most Common Byte Response
+mcbc.req,Most Common Byte Count Request
+mcbc.res,Most Common Byte Count Response
+medium,Medium
+msg,Message
+msg.id,Message ID
+netname,Network Name
+network.port,Network Port
+network.service,Network Service
+new.callback_id,NEW Callback Id
+obj.name,Object Name
+obj.type,Object Type
+org,Organization
+org.dst,Destinaton Organization
+org.src,Source Organization
+orig_ip,Originating IP Address
+OS,Operating System
+outcome.all,All Outcome Keys
+owner,Owner
+packets,Session Packet Count
+paddr,Device Address
+param,Param
+param.all,All Parameter Keys
+param.dst,Target Parameter
+param.src,Source Parameter
+parse.error,Parse Error
+password,Password
+payload,Payload Size
+payload.req,Payload Size Request
+payload.res,Payload Size Response
+policy.id,Policy ID
+policy.name,Policy Name
+port,Port Generic
+port.all,All Port Keys
+port.dst,Non-Protocol Specific Destination Port
+port.dst.all,All Destination Port Keys
+port.src,Non-Protocol Specific Source Port
+port.src.all,All Source Port Keys
+port.trans.dst,Port Translated Destination
+port.trans.src,Port Translated Source
+process,Process
+process.id,Process ID
+process.vid.dst,Endpoint Target Process ID
+process.vid.src,Endpoint Source Process ID
+protocol,Protocol
+query,Web Query
+rbytes,Bytes Received
+reference.id,Reference ID
+reference.id1,Reference Id1
+reference.id2,Reference Id2
+referer,Referer
+registry.key,Registry Key
+registry.value,Registry Value
+result,Result
+result.code,Result Code
+rid,Remote Session ID
+risk,Risk
+risk.info,Risk: Informational
+risk.num,Risk Number
+risk.suspicious,Risk: Suspicous
+risk.warning,Risk: Warning
+rpackets,Session Retransmits
+rpayload,Session Retransmit Payload
+rule,Rule
+rule.name,RuleName
+rule.uid,Rule ID
+search.text,Search Engine Queries
+server,Application
+server.id,Server ID
+service,Service Type
+service.name,Service Name
+session.split,Session Split Count
+sessionid,Session ID
+severity,Severity
+sig.id,Signature ID
+sig.name,Signature Name
+sinterface,Source Interface
+site.cat,Site Category
+size ,Data Size
+sld,Second Level Domain
+sourcefile,Source Filename
+sql,SQL Query
+ssl.ca,SSL CA
+ssl.subject,SSL Subject
+starttime,Time Start
+stransaddr,Source Translated Address
+stransport,Translated Source Port
+streams,Session Streams
+subject,Subject
+task.name,Task Name
+tcp.dstport,TCP Destination Port
+tcp.flags,TCP Flags
+tcp.flags.desc,TCP Flags Description
+tcp.srcport,TCP Source Port
+tcpfalgs,TCP Flags
+threat.category,Threat Category
+threat.desc,Threat Description
+threat.source,Threat Source
+timezone,Time Zone
+tld,Top Level Domains
+tls.extensionlen,TLS Extensions Length
+ubc.req,Unique Byte Count Request
+ubc.res,Unique Byte Count Response
+udp.dstport,UDP Target Port
+udp.srcport,UDP Source Port
+ueba.schema,UEBA Schema
+url,URL
+user,User Account
+user.agent,User Agent
+user.all,All User Keys
+user.dst,Destination User Account
+user.dst.hash,Destination Username Hash
+user.id,User Unique ID/Logon ID
+user.src,Source User Account
+user.src.hash,Source Username Hash
+username,User Account
+vendor,Vendor Name
+virusname,Virus Name
+web.domain,Web Domain
+web.method,Web Method
+web.referer,Web Referer
+web.root,Web Root
+wlan.channel,WLAN frequency channel
+wlan.ssid,WLAN Service Set Identifier
+word,Text Token
+zone.dst,Destination Zone
+zone.src,Source Zone
