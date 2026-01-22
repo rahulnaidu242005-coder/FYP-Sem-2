@@ -7,8 +7,8 @@ load_dotenv()
 ROOT_URI = os.getenv("ROOT_URI")
 BASE_DIR = os.getcwd()
 AUTHENTICATION_URI = f"{ROOT_URI}/auth/userpass"
-USERNAME = os.getenv("USERNAME")
-PASSWORD = os.getenv("PASSWORD")
+USERNAME = os.getenv("USERNAME", "your_username")
+PASSWORD = os.getenv("PASSWORD", "your_password")
 EARLIEST_DATE = os.getenv("EARLIEST_DATE")
 ANALYST_LEVEL = os.getenv("ANALYST_LEVEL", "L1")
 

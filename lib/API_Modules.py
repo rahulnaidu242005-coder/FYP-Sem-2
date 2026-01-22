@@ -87,6 +87,20 @@ class NetWitnessClient:
 
         return response.json()
 
+    def health_check(self) -> bool:
+        logger.info("Performing health check")
+        req = APIRequestModel(
+            method="GET",
+            uri=HttpUrl(url=AUTHENTICATION_URI),
+        )
+        try:
+            self.call_api(req)
+            logger.info("Health check successful")
+            return True
+        except Exception as e:
+            logger.error(f"Health check failed: {str(e)}")
+            return False
+
     def get_token(self, username, password) -> str:
         # Log attempt but mask username for safety
         masked_user = (username[0] + "***") if (username and len(username) > 0) else "***"
@@ -151,3 +165,6 @@ class LoggerCustom:
             level=logging.INFO,
             handlers=[file_handler]
         )
+
+if __name__ == "__main__":
+    client = NetWitnessClient()

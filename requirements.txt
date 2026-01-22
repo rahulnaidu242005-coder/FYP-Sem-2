@@ -4,3 +4,7 @@ langchain-core
 langchain
 langchain-community
 jq
+fastapi
+starlette
+pydantic
+uvicorn
