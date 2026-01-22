@@ -2,6 +2,7 @@ tmp/
 chroma_langchain_db/
 .idea/
 __pycache__/
+.venv/
 Simple_RAG_Model.py
 uv.lock
 .env
