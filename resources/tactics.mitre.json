@@ -1,0 +1,827 @@
+{
+  "tactics": [
+    {
+      "key": "TA0043",
+      "description": "Reconnaissance involves an adversary gathering information to plan future operations, using techniques like active scanning, OSINT, and DNS enumeration to map a target's infrastructure and personnel. **Mitigation** focuses on minimizing the organization's public footprint by limiting technical data in WHOIS records and using web application firewalls (WAF) to block scanning. **Detection** relies on identifying abnormal traffic patterns, such as large-scale port scans or unusual surges in queries to public-facing DNS and web servers."
+    },
+    {
+      "key":  "TA0042",
+      "description": "In Resource Development, adversaries build the infrastructure—such as VPS servers, malicious domains, and code-signing certificates—needed to support their campaign. **Mitigation** involves implementing strict email filtering to block newly registered domains and using threat intelligence feeds to blacklist known malicious infrastructure. **Detection** is best achieved by monitoring for the creation of look-alike domains (typosquatting) and tracking certificates issued for your organization by unauthorized authorities."
+    },
+    {
+      "key":  "TA0040",
+      "description": "Impact techniques disrupt or destroy business processes through ransomware, disk wiping, or Data Denial of Service (DoS). **Mitigation** focuses on a robust offline backup strategy, incident response planning, and redundant network connections. **Detection** involves monitoring for high-frequency file renaming/encryption (typical of ransomware), system shutdowns across multiple hosts simultaneously, and significant drops in network or service availability."
+    },
+    {
+      "key":  "TA00011",
+      "description": "Command and Control (C2) describes the communication channel between an attacker and their malware, often using HTTP/S or DNS. **Mitigation** includes the use of proxy servers with deep packet inspection and DNS filtering to block known malicious callbacks. **Detection** relies on identifying \"beaconing\" patterns (regularly timed traffic), connections to un-categorized or newly registered domains, and protocol anomalies in web traffic."
+    },
+    {
+      "key":  "TA0010",
+      "description": "Exfiltration is the removal of data from the network, often via the C2 channel or cloud storage services. **Mitigation** involves blocking access to personal cloud storage and enforcing outbound traffic limits. **Detection** is achieved by monitoring for large outbound data transfers, unusual peaks in network egress during non-business hours, and identifying data hidden within non-standard protocols using steganography or encrypted tunnels."
+    },
+    {
+        "key":  "TA0009",
+        "description": "Collection involves identifying and gathering data, such as documents or emails, into a single staging area for theft. **Mitigation** involves implementing Data Loss Prevention (DLP) policies and restricting access to sensitive file shares using Role-Based Access Control (RBAC). **Detection** looks for the mass archiving of files (e.g., unusual use of `zip` or `rar`), frequent access to sensitive directories, or unauthorized screen captures and audio recording."
+    },
+    {
+      "key":  "TA0008",
+      "description": "Lateral Movement is the act of navigating through a network to access high-value targets via protocols like RDP, SSH, or SMB. **Mitigation** requires strict network segmentation, the use of jump hosts, and \"Pass-the-Hash\" protections. **Detection** focuses on identifying unusual internal connections, such as a workstation-to-workstation RDP session or a sudden increase in file transfers between internal servers that do not typically communicate."
+    },
+    {
+        "key":  "TA0007",
+        "description": "Discovery allows an adversary to gain knowledge of the internal network, including system configurations, process lists, and domain trusts. **Mitigation** involves restrictive network segmentation to prevent internal scanning and limiting the information returned by system commands to non-admin users. **Detection** centers on identifying \"discovery-heavy\" behavior, such as a single workstation suddenly querying the entire Active Directory for a list of all administrators or network shares."
+    },
+    {
+      "key":  "TA0006",
+      "description": "Credential Access focuses on stealing account names and passwords through methods like LSASS dumping, Kerberoasting, or keylogging. **Mitigation** includes using Credential Guard on Windows, implementing strong MFA, and limiting the use of privileged accounts on workstations. **Detection** relies on identifying unauthorized access to the LSASS process and monitoring for abnormal Kerberos \"Ticket Granting Service\" (TGS) requests that might indicate a roasting attack."
+    },
+    {
+      "key":  "TA0005",
+      "description": "Defense Evasion involves avoiding detection by obfuscating code, clearing event logs, or hollowing out legitimate processes. **Mitigation** includes using Endpoint Detection and Response (EDR) tools that can inspect memory and preventing users from disabling security agents. **Detection** is performed by looking for \"indicators of removal,\" such as the sudden clearing of Windows Event Logs (ID 1102) or the use of living-off-the-land binaries (LOLBins) like `certutil.exe`."
+    },
+    {
+      "key":  "TA0004",
+      "description": "Privilege Escalation is the process of gaining higher-level permissions, like moving from a standard user to SYSTEM or Administrator. **Mitigation** relies on patching kernel vulnerabilities and ensuring User Account Control (UAC) is set to the highest level. **Detection** involves monitoring for sensitive process injection, tracking the use of `sudo` or `RunAs` commands, and identifying the clearing or manipulation of access tokens."
+    },
+    {
+      "key":  "TA0003",
+      "description": "Persistence consists of techniques used to maintain access across reboots, such as modifying registry run keys, creating new accounts, or installing web shells. **Mitigation** involves enforcing the principle of least privilege and hardening system configurations to prevent unauthorized registry edits. **Detection** focuses on auditing changes to \"autostart\" locations, monitoring for new local or administrative accounts, and scanning web servers for unfamiliar scripts or files."
+    },
+    {
+      "key":  "TA0002",
+      "description": "Execution represents the phase where malicious code is run, often via PowerShell, WMI, or user interaction with a malicious file. **Mitigation** includes disabling unnecessary scripting engines and implementing application allowlisting to prevent unauthorized binaries from running. **Detection** centers on logging command-line arguments (e.g., PowerShell Event ID 4104) and identifying \"parent-child\" process anomalies, such as a web browser spawning a command shell."
+    },
+    {
+        "key":  "TA0001",
+        "description": "Initial Access covers the entry points used to gain a foothold, such as spearphishing, exploiting public-facing applications, or using valid credentials on a VPN. **Mitigation** strategies emphasize multi-factor authentication (MFA), regular software patching, and user awareness training to recognize phishing. **Detection** requires monitoring for successful logins from unusual geographic locations, sudden spikes in failed authentication attempts, and unauthorized changes to web server files."
+    }
+  ],
+  "techniques": [
+    {
+      "key": "T1595",
+      "tacticId": "TA0043",
+      "description": "### Active Scanning\nAdversaries may execute active reconnaissance scans to gather information that can be used during targeting. Active scans are those where the adversary probes victim infrastructure via network traffic, as opposed to other forms of reconnaissance that do not involve direct interaction. Examples include scanning IP blocks for active hosts, performing vulnerability scans to identify unpatched software, and using wordlist scanning to find hidden directories or infrastructure."
+    },
+    {
+      "key": "T1592",
+      "tacticId": "TA0043",
+      "description": "### Gather Victim Host Information\nAdversaries may gather information about the victim's hosts that can be used during targeting. Information about hosts may include administrative data (e.g., name, assigned IP, functionality) as well as specifics regarding its configuration (e.g., operating system, language, hardware components, and firmware versions). This data helps the adversary tailor payloads to the specific technical environment of the target."
+    },
+    {
+      "key": "T1589",
+      "tacticId": "TA0043",
+      "description": "### Gather Victim Identity Information\nAdversaries may gather information about the victim's identity to facilitate targeting. This includes personal data such as employee names, email addresses, and security question responses. Adversaries may also seek sensitive details like credentials or multi-factor authentication information to guide phishing efforts or to take advantage of password reuse across personal and business accounts."
+    },
+    {
+      "key": "T1590",
+      "tacticId": "TA0043",
+      "description": "### Gather Victim Network Information\nAdversaries may gather information about the victim's networks to plan further operations. This includes details about the network topology, IP address ranges, domain names, and administrative settings. Understanding the network layout allows adversaries to identify high-value targets, security boundaries, and potential pivot points for lateral movement."
+    },
+    {
+      "key": "T1591",
+      "tacticId": "TA0043",
+      "description": "### Gather Victim Org Information\nAdversaries may gather information about the victim's organization to understand business operations and hierarchy. This can include details about business partners, internal departments, physical locations, and upcoming business events. Such information is often used to craft highly convincing social engineering lures or to identify supply chain vulnerabilities."
+    },
+    {
+      "key": "T1598",
+      "tacticId": "TA0043",
+      "description": "### Phishing for Information\nAdversaries may send phishing messages to elicit sensitive information that can be used during targeting. Unlike phishing for execution, the primary goal here is information gathering. Tactics include spearphishing via email, service, or SMS (smishing) to trick users into revealing credentials, internal technical details, or organizational hierarchies."
+    },
+    {
+      "key": "T1597",
+      "tacticId": "TA0043",
+      "description": "### Search Closed Sources\nAdversaries may search closed sources to gather information about a victim. These are sources that are not publicly available and may require a subscription, membership, or illicit access. Examples include purchased data breaches, proprietary threat intelligence feeds, or information bought from initial access brokers on dark web forums."
+    },
+    {
+      "key": "T1596",
+      "tacticId": "TA0043",
+      "description": "### Search Open Technical Databases\nAdversaries may search open technical databases to gather information about a victim's infrastructure. These databases often contain public records of technical assets, such as DNS records (WHOIS), SSL/TLS certificates (Certificate Transparency logs), and scan results from services like Shodan or Censys that index internet-connected devices."
+    },
+    {
+      "key": "T1593",
+      "tacticId": "TA0043",
+      "description": "### Search Open Websites/Domains\nAdversaries may search open websites and domains to gather information about a victim. This includes crawling an organization's primary website for employee bios and technical documentation, monitoring social media sites (LinkedIn, Twitter) for staff details, and searching job boards for technical requirements that reveal the company's internal tech stack."
+    },
+    {
+      "key": "T1594",
+      "tacticId": "TA0043",
+      "description": "### Search Victim-Owned Websites\nAdversaries may search websites owned by the victim for information that can be used during targeting. These sites may contain a wealth of information, including technical documentation, help guides, and metadata in uploaded documents (e.g., PDF/DOCX files) that reveal internal usernames, software versions, and naming conventions."
+    },
+    {
+      "key": "T1650",
+      "tactic": "TA0042",
+      "description": "### Acquire Access\nAdversaries may purchase or otherwise acquire existing access to a target system or network. A variety of online services and initial access broker (IAB) networks are available to sell access to previously compromised systems. In some cases, adversary groups may form partnerships to share compromised systems with each other to facilitate lateral movement or specific mission objectives."
+    },
+    {
+      "key": "T1583",
+      "tactic": "TA0042",
+      "description": "### Acquire Infrastructure\nAdversaries may buy, lease, rent, or obtain infrastructure that can be used during targeting. A wide variety of infrastructure exists for hosting and orchestrating adversary operations, including physical or cloud servers, domains, and third-party web services. This also includes the use of Virtual Private Servers (VPS), botnets, and serverless computing to obfuscate the origin of their activity."
+    },
+    {
+      "key": "T1586",
+      "tactic": "TA0042",
+      "description": "### Compromise Accounts\nAdversaries may compromise accounts with services that can be used during targeting. Rather than creating and cultivating new accounts, adversaries may steal or purchase existing accounts (social media, email, or cloud) to leverage established personas, bypass reputation-based filters, or gain immediate access to trusted communication channels."
+    },
+    {
+      "key": "T1587",
+      "tactic": "TA0042",
+      "description": "### Develop Capabilities\nAdversaries may develop software and payloads that can be used during targeting. This involves the creation of custom malware, scripts, or automated tools tailored to the target's environment. Development may include writing code from scratch, modifying existing open-source tools, or creating obfuscation techniques to evade security products."
+    },
+    {
+      "key": "T1585",
+      "tactic": "TA0042",
+      "description": "### Establish Accounts\nAdversaries may create and cultivate accounts with services that can be used during targeting. This includes setting up social media personas, email accounts, or developer accounts. Cultivating these accounts over time helps build a sense of legitimacy and 'age' that can bypass automated security filters used by various platforms."
+    },
+    {
+      "key": "T1588",
+      "tactic": "TA0042",
+      "description": "### Obtain Capabilities\nAdversaries may search for and obtain capabilities like software, exploits, or certificates that can be used during targeting. Rather than developing tools in-house, they may download open-source tools (e.g., Mimikatz, Metasploit), purchase exploits from the dark web, or steal digital certificates to sign their malware and make it appear legitimate."
+    },
+    {
+      "key": "T1584",
+      "tactic": "TA0042",
+      "description": "### Compromise Infrastructure\nAdversaries may compromise third-party infrastructure that can be used during targeting. Instead of purchasing their own servers, they may hijack legitimate web servers, DNS servers, or other networked devices to host malware or act as command and control (C2) nodes. Using compromised legitimate infrastructure helps blend malicious traffic with normal internet activity."
+    },
+    {
+      "key": "T1608",
+      "tactic": "TA0042",
+      "description": "### Stage Capabilities\nAdversaries may upload, install, or otherwise stage capabilities on infrastructure they control to support operations. This involves placing malicious files on web servers for drive-by downloads, setting up phishing sites, or configuring C2 servers to handle incoming connections once the initial breach occurs."
+    },
+    {
+      "key": "T1659",
+      "tactic": "TA0001",
+      "description": "### Content Injection\nAdversaries may gain access by injecting malicious content into systems through online network traffic. Unlike Drive-by Compromise, which lures victims to a separate site, this involves manipulating existing data streams or web pages to deliver exploits or malicious scripts directly through a vulnerable endpoint. This can include Cross-Site Scripting (XSS) or other forms of web-based injection that execute when a user interacts with the compromised platform."
+    },
+    {
+      "key": "T1189",
+      "tactic": "TA0001",
+      "description": "### Drive-by Compromise\nAdversaries may gain access to a system when a user visits a website during their normal course of browsing. The adversary weaponizes a website (often a 'watering hole' frequent by the target) to automatically deliver exploit code to the user's browser or plugins. This attack often requires no user interaction beyond simply navigating to the page, where vulnerabilities are then exploited to execute code in the context of the browser."
+    },
+    {
+      "key": "T1190",
+      "tactic": "TA0001",
+      "description": "### Exploit Public-Facing Application\nAdversaries may attempt to exploit a weakness in an Internet-facing host or system to gain an initial foothold. These weaknesses can include software bugs (like SQL injection or buffer overflows), security misconfigurations, or unpatched vulnerabilities in web servers, databases, or VPN gateways. Successful exploitation typically allows for arbitrary code execution or unauthorized access to the underlying network."
+    },
+    {
+      "key": "T1133",
+      "tactic": "TA0001",
+      "description": "### External Remote Services\nAdversaries may leverage external-facing remote services such as VPNs, RDP, or Citrix to initially access a network. These services allow legitimate users to connect to internal resources from external locations. Adversaries often use stolen or brute-forced credentials to log in through these gateways, appearing as legitimate users and bypassing the perimeter without the need for traditional exploits."
+    },
+    {
+      "key": "T1200",
+      "tactic": "TA0001",
+      "description": "### Hardware Additions\nAdversaries may physically introduce compromised hardware—such as computer accessories, network appliances, or rogue Raspberry Pis—into a system or network. This technique bypasses traditional digital perimeter defenses by establishing a direct physical connection. These devices can act as keyloggers, network taps, or covert wireless access points to provide the adversary with persistent internal access."
+    },
+    {
+      "key": "T1566",
+      "tactic": "TA0001",
+      "description": "### Phishing\nAdversaries may send phishing messages to gain access to victim systems. These are electronically delivered social engineering attacks designed to trick users into performing an action, such as clicking a link or opening an attachment. Phishing can be broad or highly targeted (Spearphishing) and is commonly used to deliver malware (Spearphishing Attachment) or harvest credentials (Spearphishing Link)."
+    },
+    {
+      "key": "T1091",
+      "tactic": "TA0001",
+      "description": "### Replication Through Removable Media\nAdversaries may move onto systems, including air-gapped or disconnected networks, by copying malware to removable media like USB drives. When the media is inserted into a target system, the malware may execute via Autorun features or by tricking the user into running a file. This method is often used to jump across security boundaries that lack direct network connectivity."
+    },
+    {
+      "key": "T1195",
+      "tactic": "TA0001",
+      "description": "### Supply Chain Compromise\nAdversaries may manipulate products or the product delivery pipeline before they reach the final consumer. This includes compromising software source code, build tools, or hardware components at the vendor level. By embedding malicious code into legitimate updates or hardware, the adversary gains access to all downstream users of that product in a highly stealthy and widespread manner."
+    },
+    {
+      "key": "T1199",
+      "tactic": "TA0001",
+      "description": "### Trusted Relationship\nAdversaries may compromise an organization by first targeting its partners, contractors, or third-party service providers who have existing access to the target network. By exploiting the established trust and technical connections (such as MSP access or shared VPNs), the adversary can pivot from the secondary target into the primary organization's environment without triggering standard external alerts."
+    },
+    {
+      "key": "T1078",
+      "tactic": "TA0001",
+      "description": "### Valid Accounts\nAdversaries may use stolen or otherwise acquired credentials for legitimate accounts to gain initial access. These accounts can include local system accounts, domain accounts, or cloud service accounts. Because the login appears legitimate, this technique is highly effective for evading detection and bypassing security controls that do not have robust behavioral monitoring or multi-factor authentication (MFA)."
+    },
+    {
+      "key": "T1651",
+      "tactic": "TA0002",
+      "description": "### Cloud Administration Command\nAdversaries may abuse cloud management services to execute commands within virtual machines (VMs). Resources such as AWS Systems Manager, Azure RunCommand, and Google Cloud Runbooks allow users to remotely run scripts in VMs by leveraging installed virtual machine agents. Attackers with administrative access to a cloud environment can misuse these built-in management tools to execute code without the need for traditional network-based remote access."
+    },
+    {
+      "key": "T1059",
+      "tactic": "TA0002",
+      "description": "### Command and Scripting Interpreter\nAdversaries may abuse command and script interpreters to execute commands, scripts, or binaries. These interfaces are a common feature across all platforms and provide a direct way to interact with a system. Common examples include PowerShell, the Windows Command Shell (cmd), Unix shells (bash, zsh), and scripting languages like Python or JavaScript. Adversaries often use these to perform discovery, download additional payloads, or execute malicious code while blending in with legitimate administrative activity."
+    },
+    {
+      "key": "T1609",
+      "tactic": "TA0002",
+      "description": "### Container Administration Command\nAdversaries may abuse container administration tools to execute commands within a container or on a container host. Tools like `kubectl exec` or `docker exec` allow users to run processes inside existing containers. If an adversary gains access to a container orchestration API (such as Kubernetes) or a management engine, they can use these commands to pivot through the environment, install malware, or extract data from running applications."
+    },
+    {
+      "key": "T1610",
+      "tactic": "TA0002",
+      "description": "### Deploy Container\nAdversaries may deploy a new container to execute malicious code within a containerized environment. By creating a new container from a controlled image, an attacker can establish a consistent execution environment that may lack security monitoring. This technique is often used in cloud and Kubernetes environments to run cryptominers or to establish a persistent foothold within the cluster infrastructure."
+    },
+    {
+      "key": "T1106",
+      "tactic": "TA0002",
+      "description": "### Native API\nAdversaries may directly interact with a system's native Application Programming Interface (API) to execute code. By bypassing high-level scripting languages or command-line utilities and calling low-level functions (such as the Windows API or Unix system calls), attackers can perform actions more stealthily. This often allows them to evade security tools that only monitor for common command-line activity or higher-level process creation events."
+    },
+    {
+      "key": "T1053",
+      "tactic": "TA0002",
+      "description": "### Scheduled Task/Job\nAdversaries may abuse task scheduling functionality to facilitate the execution of malicious code. Operating systems provide utilities like Windows Task Scheduler, `at`, or `cron` to run programs at specific times or intervals. Attackers can use these to ensure their code runs automatically upon system startup or on a recurring basis, providing both a mechanism for execution and a reliable method for maintaining persistence."
+    },
+    {
+      "key": "T1203",
+      "tactic": "TA0002",
+      "description": "### Exploitation for Client Execution\nAdversaries may exploit software vulnerabilities in client applications to execute code on a victim's system. This often occurs when a user opens a malicious file (such as a PDF or Word document) or visits a compromised website. Vulnerabilities in web browsers, office suites, or media players allow the attacker to gain control of the application's process and execute arbitrary code in the context of the logged-in user."
+    },
+    {
+      "key": "T1559",
+      "tactic": "TA0002",
+      "description": "### Inter-Process Communication (IPC)\nAdversaries may utilize IPC mechanisms to execute commands or trigger actions across different processes. Techniques like Dynamic Data Exchange (DDE) in Windows or the use of Component Object Model (COM) allow one program to control another. Attackers can abuse these legitimate features to move from one compromised application to another or to execute code via trusted system processes."
+    },
+    {
+      "key": "T1569",
+      "tactic": "TA0002",
+      "description": "### System Services\nAdversaries may abuse system services to execute malicious code. This can involve creating new services or modifying existing ones to point to a malicious binary. Because services often run with high privileges (such as SYSTEM or root) and start automatically with the operating system, they are a powerful target for attackers looking to execute code reliably and with elevated permissions."
+    },
+    {
+      "key": "T1204",
+      "tactic": "TA0002",
+      "description": "### User Execution\nAdversaries may rely on a user to perform an action that results in code execution. This is a common component of social engineering, where a victim is tricked into opening a malicious attachment, clicking a link, or running a file that they believe is legitimate. Common examples include malicious macros in documents, malicious shortcuts (.lnk), or executables masquerading as common software updates."
+    },
+    {
+      "key": "T1047",
+      "tactic": "TA0002",
+      "description": "### Windows Management Instrumentation (WMI)\nAdversaries may abuse Windows Management Instrumentation (WMI) to execute commands on local or remote systems. WMI is a powerful administrative feature that provides a standardized interface for managing Windows systems. Attackers can use it to create processes, query system information, or establish persistence, often using it to run code on remote machines where they have administrative credentials."
+    },
+    {
+      "key": "T1648",
+      "tactic": "TA0002",
+      "description": "### Serverless Execution\nAdversaries may abuse serverless computing services, such as AWS Lambda or Azure Functions, to execute malicious code. By deploying malicious functions or modifying existing ones, attackers can run code in a transient, highly scalable environment. This can be used for tasks like data exfiltration, automated scanning, or triggering other cloud-based actions while avoiding the persistent footprint of a traditional virtual machine."
+    },
+    {
+      "key": "T1098",
+      "tactic": "TA0003",
+      "description": "### Account Manipulation\nAdversaries may manipulate accounts to maintain access to victim systems. This can include modifying account permissions, adding new credentials to existing accounts (such as SSH keys or cloud access tokens), or changing account settings to bypass security policies. By altering legitimate accounts, attackers can ensure they retain access even if their initial entry method is discovered and remediated."
+    },
+    {
+      "key": "T1197",
+      "tactic": "TA0003",
+      "description": "### BITS Jobs\nAdversaries may abuse Background Intelligent Transfer Service (BITS) jobs to execute code or move files. BITS is a Windows component used for asynchronous file transfers between systems. Because BITS is designed to be resilient across restarts and network interruptions, attackers use it to schedule malicious downloads or executions that persist through reboots and blend in with normal system updates."
+    },
+    {
+      "key": "T1547",
+      "tactic": "TA0003",
+      "description": "### Boot or Logon Autostart Execution\nAdversaries may configure system settings to automatically execute malicious content during startup or logon. Common methods include adding entries to the Windows Registry 'Run' keys, placing scripts in the Startup folder, or modifying boot sectors. This ensures that the adversary's tools are re-activated every time the system or a specific user session begins."
+    },
+    {
+      "key": "T1037",
+      "tactic": "TA0003",
+      "description": "### Boot or Logon Initialization Scripts\nAdversaries may use scripts executed during system boot or logon initialization to maintain persistence. These include logon scripts defined in Active Directory, startup scripts in local group policies, or shell initialization files (like .bashrc or .profile) on Unix systems. These scripts run automatically when a user logs in, providing a reliable execution trigger for persistent malware."
+    },
+    {
+      "key": "T1176",
+      "tactic": "TA0003",
+      "description": "### Browser Extensions\nAdversaries may install malicious browser extensions to maintain access to a user's web activity. Extensions have broad permissions to read and modify web content, capture credentials entered into forms, and communicate with external C2 servers. Since extensions often sync across multiple devices via browser accounts, they provide a durable foothold that survives even if the local machine is cleaned."
+    },
+    {
+      "key": "T1554",
+      "tactic": "TA0003",
+      "description": "### Compromise Client Software Binary\nAdversaries may modify legitimate software binaries on a client system to include malicious code. By patching an existing, trusted application (like a web browser or communication tool), the attacker ensures their code is executed whenever the user runs that application. This technique is difficult to detect because the malicious activity originates from a signed, trusted process."
+    },
+    {
+      "key": "T1136",
+      "tactic": "TA0003",
+      "description": "### Create Account\nAdversaries may create new local, domain, or cloud accounts to maintain access to victim systems. By establishing a dedicated account, the attacker can bypass the need to constantly steal user credentials. These accounts are often configured with administrative privileges and given names that blend in with legitimate service accounts to avoid suspicion during audits."
+    },
+    {
+      "key": "T1543",
+      "tactic": "TA0003",
+      "description": "### Create or Modify System Process\nAdversaries may create or modify system services and daemons to execute malicious code. On Windows, this involves creating a new Service; on macOS and Linux, it involves Launch Agents or Systemd services. Because system processes often run with high privileges and are managed by the OS, they provide a stealthy and robust method for maintaining a permanent presence on a host."
+    },
+    {
+      "key": "T1546",
+      "tactic": "TA0003",
+      "description": "### Event Triggered Execution\nAdversaries may use system events to trigger the execution of malicious code. This can include hijacking Windows Management Instrumentation (WMI) event subscriptions, using Accessibility Features (like Sticky Keys), or exploiting Shell persistent handlers. By tying execution to common system behaviors, the attacker ensures their malware runs without needing a traditional scheduled task."
+    },
+    {
+      "key": "T1137",
+      "tactic": "TA0003",
+      "description": "### Office Application Startup\nAdversaries may abuse Microsoft Office templates and add-ins to maintain persistence. By placing malicious code in the 'Global Template' or creating custom Office Add-ins, the attacker ensures their payload is executed every time a user opens Word, Excel, or Outlook. This is a common method for maintaining a foothold within productivity-heavy environments."
+    },
+    {
+      "key": "T1505",
+      "tactic": "TA0003",
+      "description": "### Server Software Component\nAdversaries may install or modify components on web servers or database servers to maintain access. A common example is the deployment of a 'Web Shell'—a script uploaded to a web server that allows for remote command execution. Other methods include modifying SQL stored procedures or IIS modules to intercept traffic and execute code in the context of the server application."
+    },
+    {
+      "key": "T1205",
+      "tactic": "TA0003",
+      "description": "### Traffic Signaling\nAdversaries may use 'Port Knocking' or other traffic signaling techniques to open a hidden backdoor. By sending a specific sequence of packets to a system, the attacker can trigger a local script to open a firewall port or initiate a reverse shell. This allows the persistence mechanism to remain completely dormant and invisible to port scanners until the correct signal is received."
+    },
+    {
+      "key": "T1108",
+      "tactic": "TA0003",
+      "description": "### Redundant Access\nAdversaries may establish multiple, redundant persistence mechanisms to ensure continued access if one method is detected and removed. This often involves combining different tactics, such as a scheduled task on one system, a web shell on another, and a modified system service on a third. Redundancy increases the likelihood that the adversary can recover from partial remediation by security teams."
+    },
+    {
+      "key": "T1548",
+      "tactic": "TA0004",
+      "description": "### Abuse Elevation Control Mechanism\nAdversaries may circumvent mechanisms designed to control elevated privileges to gain higher-level permissions. Common examples include bypassing Windows User Account Control (UAC) to run programs with administrator rights or exploiting the `sudo` command on Unix-like systems. By manipulating these controls, attackers can execute commands with privileges they should not possess based on their current user context."
+    },
+    {
+      "key": "T1134",
+      "tactic": "TA0004",
+      "description": "### Access Token Manipulation\nAdversaries may modify or duplicate access tokens to operate under a different user or system security context. Access tokens are used by Windows to identify the security context of a process or thread. Attackers can steal tokens from existing processes or create new ones to impersonate administrative users, bypass security auditing, and gain permissions to sensitive resources."
+    },
+    {
+      "key": "T1547",
+      "tactic": "TA0004",
+      "description": "### Boot or Logon Autostart Execution\nAdversaries may configure system settings to automatically execute malicious content with elevated privileges during startup. If a persistent mechanism is placed in a location that is executed by a high-privileged account (such as a SYSTEM-level service or a global startup script), the adversary can gain elevated execution every time the system boots or a specific user logs in."
+    },
+    {
+      "key": "T1037",
+      "tactic": "TA0004",
+      "description": "### Boot or Logon Initialization Scripts\nAdversaries may abuse scripts that run during system initialization to gain elevated access. Since these scripts—such as Logon Scripts in Active Directory or Startup Scripts in GPO—often run in a privileged context to set up the environment, injecting malicious code into them allows the attacker to execute their own commands with the same high-level permissions."
+    },
+    {
+      "key": "T1543",
+      "tactic": "TA0004",
+      "description": "### Create or Modify System Process\nAdversaries may create or modify system services, daemons, or configurations to run at a higher privilege level. By creating a new service on Windows or a launch agent on macOS, an attacker can specify that the malicious binary should execute as 'SYSTEM' or 'root'. This ensures that the malware not only persists but does so with full control over the operating system."
+    },
+    {
+      "key": "T1484",
+      "tactic": "TA0004",
+      "description": "### Domain Policy Modification\nAdversaries may modify domain policies to gain elevated permissions across an entire network. This involves manipulating Group Policy Objects (GPOs) or domain-level settings to grant their accounts administrative rights on all workstations and servers. This powerful technique allows for widespread privilege escalation that is difficult to revert without a clean backup of the Active Directory environment."
+    },
+    {
+      "key": "T1611",
+      "tactic": "TA0004",
+      "description": "### Escape to Host\nAdversaries may break out of a container or virtual machine to gain access to the underlying host system. By exploiting vulnerabilities in the hypervisor or container engine (like Docker or Kubernetes), the attacker can 'escape' their isolated environment. Once on the host, they often inherit high-level privileges that allow them to access all other containers and sensitive host resources."
+    },
+    {
+      "key": "T1546",
+      "tactic": "TA0004",
+      "description": "### Event Triggered Execution\nAdversaries may use specific system events to trigger malicious code at an elevated level. For example, by hijacking accessibility features like 'Sticky Keys' (sethc.exe), an attacker can trigger a command prompt with SYSTEM privileges from the Windows logon screen without even logging in. Other triggers include WMI event subscriptions and shell exit hooks."
+    },
+    {
+      "key": "T1068",
+      "tactic": "TA0004",
+      "description": "### Exploitation for Privilege Escalation\nAdversaries may exploit software vulnerabilities to elevate their permissions on a system. This typically involves using a 'Local Privilege Escalation' (LPE) exploit against the operating system kernel, a driver, or a high-privileged service. Successful exploitation grants the attacker the ability to run arbitrary code in a much more permissive security context, such as root or NT AUTHORITY\\SYSTEM."
+    },
+    {
+      "key": "T1574",
+      "tactic": "TA0004",
+      "description": "### Hijack Execution Flow\nAdversaries may redirect the execution of a legitimate program to run their own malicious code with the same privileges as the original application. Common techniques include DLL Search Order Hijacking, where a malicious DLL is placed in a directory searched before the legitimate one, and Path Interception, which involves placing a malicious executable in a way that the OS runs it instead of the intended program."
+    },
+    {
+      "key": "T1053",
+      "tactic": "TA0004",
+      "description": "### Scheduled Task/Job\nAdversaries may abuse task scheduling to execute code with elevated privileges. If an attacker has the permissions to create a task that runs as the 'SYSTEM' account, they can use utilities like Windows Task Scheduler or `cron` to execute their payload at a higher privilege level than their current interactive session allows."
+    },
+    {
+      "key": "T1055",
+      "tactic": "TA0004",
+      "description": "### Process Injection\nAdversaries may inject malicious code into processes that are already running with higher privileges. By injecting into a SYSTEM-level process like `lsass.exe` or `svchost.exe`, the attacker's code inherits the permissions of the host process. This allows them to perform administrative actions and access sensitive memory regions while remaining hidden within a legitimate, trusted process."
+    },
+    {
+      "key": "T1548",
+      "tactic": "TA0005",
+      "description": "### Abuse Elevation Control Mechanism\nAdversaries may bypass mechanisms designed to control elevated privileges to avoid detection. By circumventing User Account Control (UAC) or exploiting sudo configurations, they can perform administrative actions without triggering the typical prompts or logs associated with high-privilege requests, effectively hiding their escalation from monitoring tools."
+    },
+    {
+      "key": "T1134",
+      "tactic": "TA0005",
+      "description": "### Access Token Manipulation\nAdversaries may modify or duplicate access tokens to blend in with legitimate system traffic and bypass security auditing. By assuming the identity of a trusted user or service, they can perform actions that would otherwise be flagged as unauthorized, making their activity appear as normal, authorized behavior within the environment."
+    },
+    {
+      "key": "T1140",
+      "tactic": "TA0005",
+      "description": "### Deobfuscate/Decode Files or Information\nAdversaries may use obfuscated or encoded files to hide their payloads from signature-based security tools. Once on the target system, they use built-in utilities or custom scripts to deobfuscate the data into its original executable form. This ensures that the malicious content remains 'invisible' while in transit or at rest until the moment of execution."
+    },
+    {
+      "key": "T1006",
+      "tactic": "TA0005",
+      "description": "### Direct Volume Access\nAdversaries may directly access a storage volume to bypass file system permissions and monitoring. By reading the raw disk instead of using high-level API calls, they can extract sensitive files—such as the NTDS.dit database or registry hives—without triggering file-access alerts or being blocked by operating system security descriptors."
+    },
+    {
+      "key": "T1484",
+      "tactic": "TA0005",
+      "description": "### Domain Policy Modification\nAdversaries may modify domain policies, such as Group Policy Objects (GPOs), to disable security features across an entire network. By pushing out a policy that turns off Windows Defender, disables logging, or adds a malicious user to the local administrators group, they can weaken the security posture of all systems simultaneously and covertly."
+    },
+    {
+      "key": "T1211",
+      "tactic": "TA0005",
+      "description": "### Exploitation for Defense Evasion\nAdversaries may exploit vulnerabilities in security software itself to disable its protection. By targeting bugs in antivirus engines, EDR agents, or firewalls, an attacker can cause these services to crash, leak information, or stop monitoring the system, creating a blind spot for their subsequent malicious activities."
+    },
+    {
+      "key": "T1564",
+      "tactic": "TA0005",
+      "description": "### Hide Artifacts\nAdversaries may hide their presence by concealing files, directories, or registry keys. Techniques include using hidden attributes, NTFS Extended Attributes, or placing files in obscure system directories with legitimate-looking names. This prevents casual observation by users and simple automated scans from identifying the malicious components."
+    },
+    {
+      "key": "T1574",
+      "tactic": "TA0005",
+      "description": "### Hijack Execution Flow\nAdversaries may redirect the execution of legitimate programs to run their own code, effectively 'masking' their activity. By using DLL side-loading or search order hijacking, they can force a trusted, signed application to load a malicious library. To a security tool, the activity appears to originate from a verified, legitimate process."
+    },
+    {
+      "key": "T1070",
+      "tactic": "TA0005",
+      "description": "### Indicator Removal\nAdversaries may delete or modify artifacts generated during an intrusion to hide their tracks. This includes clearing system event logs (e.g., PowerShell or Security logs), deleting command history files (like .bash_history), and removing temporary files or registry keys created during the attack. This makes forensic reconstruction significantly more difficult for investigators."
+    },
+    {
+      "key": "T1036",
+      "tactic": "TA0005",
+      "description": "### Masquerading\nAdversaries may attempt to make their malicious content look legitimate to evade scrutiny. This involves naming malicious processes or files after trusted system utilities (e.g., `svchost.exe` or `lsass.exe`), using similar icons, or placing files in directories where they are expected to exist. This technique relies on visual or path-based deception to bypass human and automated detection."
+    },
+    {
+      "key": "T1027",
+      "tactic": "TA0005",
+      "description": "### Obfuscated Files or Information\nAdversaries may compress, encrypt, or otherwise encode their code to avoid detection by static analysis tools. By changing the file signature or 'packing' the binary, they ensure that antivirus software cannot recognize the code as a known threat. The payload only reveals its true nature when it is unpacked in memory during execution."
+    },
+    {
+      "key": "T1055",
+      "tactic": "TA0005",
+      "description": "### Process Injection\nAdversaries may inject malicious code into the memory space of a legitimate, running process. This allows them to execute their code under the guise of a trusted application, bypassing process-based firewalls and endpoint security agents. Since the code resides only in memory, it often avoids detection by traditional file-based antivirus scanners."
+    },
+    {
+      "key": "T1110",
+      "tactic": "TA0006",
+      "description": "### Brute Force\nAdversaries may use brute force techniques to gain access to accounts when passwords are unknown. This involves systematically testing many passwords or hashes (including password spraying and credential stuffing) until a match is found. These attacks often target external-facing services like RDP, SSH, or web-based login portals to gain an initial foothold or escalate privileges within the network."
+    },
+    {
+      "key": "T1555",
+      "tactic": "TA0006",
+      "description": "### Credentials from Password Stores\nAdversaries may search for and extract credentials from common password storage locations. This includes web browser credential stores (like Chrome's Login Data), password managers, and OS-level vaults (like Windows Credential Manager or macOS Keychain). These stores often contain plain-text or easily decryptable passwords for various websites and internal services."
+    },
+    {
+      "key": "T1212",
+      "tactic": "TA0006",
+      "description": "### Exploitation for Credential Access\nAdversaries may exploit software vulnerabilities to steal credentials. This often targets services that manage authentication, such as a vulnerable VPN gateway or a web application with a SQL injection flaw that allows dumping the user database. Successful exploitation can reveal password hashes or clear-text credentials stored in the application's memory or database."
+    },
+    {
+      "key": "T1187",
+      "tactic": "TA0006",
+      "description": "### Forced Authentication\nAdversaries may force a system to authenticate to a resource they control to capture authentication hashes. On Windows, this is often done by tricking a system into making an SMB connection to an attacker-controlled server, causing the system to send its NTLM hash. The attacker can then attempt to crack this hash offline or use it in a 'Pass-the-Hash' attack."
+    },
+    {
+      "key": "T1606",
+      "tactic": "TA0006",
+      "description": "### Forge Web Credentials\nAdversaries may forge credentials to bypass web-based authentication. This includes creating or modifying session cookies and SAML tokens to impersonate users or gain administrative access to web applications and cloud services. By manipulating these tokens, attackers can maintain persistent access to a web session without needing the user's actual password."
+    },
+    {
+      "key": "T1056",
+      "tactic": "TA0006",
+      "description": "### Input Capture\nAdversaries may capture user input to steal credentials as they are typed. The most common form is keylogging, where a malicious program records every keystroke. Other methods include 'GUI Input Capture,' which takes screenshots of login windows or uses fake login prompts (credential phishing) to trick users into entering their passwords directly into a malicious interface."
+    },
+    {
+      "key": "T1557",
+      "tactic": "TA0006",
+      "description": "### Adversary-in-the-Middle\nAdversaries may position themselves between a user and a resource to intercept credentials in transit. By performing ARP spoofing or LLMNR/NBT-NS poisoning, attackers can redirect network traffic through their machine. This allows them to capture authentication requests, relay them to other systems, or downgrade encrypted connections to steal passwords in plain text."
+    },
+    {
+      "key": "T1003",
+      "tactic": "TA0006",
+      "description": "### OS Credential Dumping\nAdversaries may dump credentials from operating system memory or storage to obtain account secrets. Common targets include the Local Security Authority Subsystem Service (LSASS) process, the SAM database, and the NTDS.dit file on Domain Controllers. These files and memory regions contain password hashes (NTLM) and sometimes clear-text passwords (via WDigest or SSPs)."
+    },
+    {
+      "key": "T1558",
+      "tactic": "TA0006",
+      "description": "### Steal or Forge Kerberos Tickets\nAdversaries may steal or forge Kerberos tickets to bypass authentication in a Windows domain. Techniques like 'Kerberoasting' involve requesting service tickets and cracking them offline, while 'AS-REP Roasting' targets accounts without pre-authentication. Attackers can also create 'Golden Tickets' (TGT) or 'Silver Tickets' (TGS) to gain persistent, high-level access to domain resources."
+    },
+    {
+      "key": "T1539",
+      "tactic": "TA0006",
+      "description": "### Steal Web Session Cookie\nAdversaries may steal session cookies to hijack a user's active web session. By gaining access to the browser's memory or local storage, they can copy the session tokens used for services like Microsoft 365, AWS, or Gmail. This allows the attacker to bypass multi-factor authentication (MFA) because the cookie represents a session that has already been successfully authenticated."
+    },
+    {
+      "key": "T1552",
+      "tactic": "TA0006",
+      "description": "### Unsecured Credentials\nAdversaries may search local and network-accessible locations for unsecured credentials. This includes searching for 'password' in text files, scripts (hardcoded credentials), configuration files (like web.config or settings.xml), and environment variables. Developers and admins often leave these secrets exposed, providing an easy path for attackers to move laterally."
+    },
+    {
+      "key": "T1087",
+      "tactic": "TA0007",
+      "description": "### Account Discovery\nAdversaries may attempt to get a listing of local system or domain accounts. This helps them identify which users have administrative privileges, which accounts are service accounts, and which personas are worth impersonating. They may use commands like `net user`, `whoami`, or query Active Directory via LDAP to map out the potential targets for credential theft or lateral movement."
+    },
+    {
+      "key": "T1010",
+      "tactic": "TA0007",
+      "description": "### Application Window Discovery\nAdversaries may attempt to get a list of open application windows. By enumerating the titles of active windows, an attacker can gain insight into what the user is currently working on, such as specific sensitive documents, banking websites, or internal administrative tools. This information is often used to time malicious actions or to identify opportunities for input capture."
+    },
+    {
+      "key": "T1213",
+      "tactic": "TA0007",
+      "description": "### Data from Information Repositories\nAdversaries may leverage internal information repositories to find sensitive data or technical details about the environment. This includes searching through internal Wikis (like Confluence), SharePoint sites, or code repositories (like GitHub or GitLab). These platforms often contain network diagrams, architectural documentation, and sometimes hardcoded credentials that facilitate further exploitation."
+    },
+    {
+      "key": "T1482",
+      "tactic": "TA0007",
+      "description": "### Domain Trust Discovery\nAdversaries may attempt to gather information about the trust relationships between Windows domains and forests. By using tools like `dsquery` or PowerView, they can determine which domains trust each other. Understanding these relationships allows an attacker to identify paths for pivoting from a compromised child domain into a more sensitive parent domain or a separate business unit."
+    },
+    {
+      "key": "T1083",
+      "tactic": "TA0007",
+      "description": "### File and Directory Discovery\nAdversaries may enumerate files and directories on the local system or network shares. They look for sensitive information like configuration files, password lists, and intellectual property. Using commands like `dir` or `find`, they can identify high-value targets for exfiltration or discover where automated scripts and binaries are stored for potential hijacking."
+    },
+    {
+      "key": "T1613",
+      "tactic": "TA0007",
+      "description": "### Container and Cloud Infrastructure Discovery\nAdversaries may attempt to discover details about the container or cloud environment they are operating in. This includes querying the Instance Metadata Service (IMDS) to get cloud roles and credentials, or using `kubectl` to list pods, services, and namespaces in a Kubernetes cluster. This provides the 'lay of the land' for moving across cloud-native infrastructure."
+    },
+    {
+      "key": "T1046",
+      "tactic": "TA0007",
+      "description": "### Network Service Discovery\nAdversaries may attempt to get a listing of services running on remote hosts and local network segments. By using port scanners (like Nmap) or native Windows commands, they can identify open ports and the software versions behind them. This helps in finding vulnerable services like unpatched web servers or exposed databases that can be targeted for the next phase of the attack."
+    },
+    {
+      "key": "T1135",
+      "tactic": "TA0007",
+      "description": "### Network Share Discovery\nAdversaries may look for network shares to identify where shared data is stored across the environment. By using commands like `net view` or `showmount`, they can find accessible SMB or NFS shares. These shares often contain backups, sensitive documents, and software installers that can be used for data collection or lateral tool transfer."
+    },
+    {
+      "key": "T1057",
+      "tactic": "TA0007",
+      "description": "### Process Discovery\nAdversaries may attempt to get a list of running processes on a system. This information helps them identify security software (like antivirus or EDR), debugging tools, and other applications they might want to inject code into. Commands like `tasklist` or `ps` provide a snapshot of the system's activity, allowing the attacker to tailor their evasion techniques."
+    },
+    {
+      "key": "T1012",
+      "tactic": "TA0007",
+      "description": "### Query Registry\nAdversaries may interact with the Windows Registry to gather information about the system's configuration and installed software. The registry contains a wealth of data, including security settings, autostart locations, and version information for various applications. By querying specific keys, an attacker can find vulnerabilities or identify paths for persistence and privilege escalation."
+    },
+    {
+      "key": "T1082",
+      "tactic": "TA0007",
+      "description": "### System Information Discovery\nAdversaries may attempt to get detailed information about the operating system and hardware. This includes the OS version, patch level, architecture, and whether the system is a physical machine or a virtual machine (VM). This data is crucial for selecting the correct exploit or payload and for determining if the attacker is being monitored in a sandbox environment."
+    },
+    {
+      "key": "T1016",
+      "tactic": "TA0007",
+      "description": "### System Network Configuration Discovery\nAdversaries may look for details about the network configuration of a system, including IP addresses, DNS servers, and routing tables. Using utilities like `ipconfig` or `netstat`, they can identify internal network boundaries and other connected systems. This helps in mapping out the local network and identifying potential targets for lateral movement."
+    },
+    {
+      "key": "T1210",
+      "tactic": "TA0008",
+      "description": "### Exploitation of Remote Services\nAdversaries may exploit software vulnerabilities in remote services to move laterally within a network. This involves targeting internal applications such as web servers, database management systems, or unpatched SMB services (e.g., EternalBlue). Successful exploitation allows the attacker to execute code on a remote system, bypassing the need for valid credentials to gain access to a new host."
+    },
+    {
+      "key": "T1534",
+      "tactic": "TA0008",
+      "description": "### Internal Spearphishing\nAdversaries may use internal spearphishing to move from one compromised user to another within the same organization. By sending malicious emails or messages from a previously hijacked internal account, the attacker leverages the established trust between employees. This makes the phishing lure significantly more convincing, increasing the likelihood that the next victim will click a malicious link or open an infected attachment."
+    },
+    {
+      "key": "T1570",
+      "tactic": "TA0008",
+      "description": "### Lateral Tool Transfer\nAdversaries may transfer tools or other files between systems in a compromised environment. Once a foothold is established, they often need to move custom scripts, remote access trojans (RATs), or credential dumpers to other machines to further their mission. This is typically done via internal network shares, peer-to-peer transfers, or using native tools like SCP or PowerShell's `Invoke-WebRequest`."
+    },
+    {
+      "key": "T1563",
+      "tactic": "TA0008",
+      "description": "### Remote Service Session Hijacking\nAdversaries may hijack an existing, active session on a remote service to move through the network. This includes techniques like RDP Session Hijacking, where an attacker takes control of a disconnected or active user session without knowing their password. By assuming control of a legitimate session, the adversary can operate with the permissions and identity of that user while remaining hidden from authentication logs."
+    },
+    {
+      "key": "T1021",
+      "tactic": "TA0008",
+      "description": "### Remote Services\nAdversaries may use valid credentials to log into remote services such as RDP, SSH, VNC, or SMB to move between systems. These services are commonly used by IT administrators for management, making the attacker's activity blend in with normal network maintenance. By logging in as a legitimate user, the adversary can interact with the system's desktop or command line to execute further discovery and collection tasks."
+    },
+    {
+      "key": "T1072",
+      "tactic": "TA0008",
+      "description": "### Software Deployment Tools\nAdversaries may abuse software deployment and systems management tools to move laterally. Systems like Microsoft Configuration Manager (MECM/SCCM), PDQ Deploy, or internal automation scripts are designed to execute code across hundreds of machines simultaneously. If an attacker gains administrative access to these management consoles, they can push malware to every system in the enterprise at once."
+    },
+    {
+      "key": "T1080",
+      "tactic": "TA0008",
+      "description": "### Taint Shared Content\nAdversaries may deliver malicious content to other users by tainting shared resources. This includes adding malicious macros to commonly used documents on a network share or replacing installers in a software repository. When other users access these shared files, their systems execute the adversary's code, allowing the attacker to spread their footprint without direct interaction with the new target system."
+    },
+    {
+      "key": "T1550",
+      "tactic": "TA0008",
+      "description": "### Use Alternate Authentication Material\nAdversaries may use alternate authentication material, such as password hashes or Kerberos tickets, to move laterally without knowing a user's cleartext password. Techniques include 'Pass-the-Hash' (PtH), which uses an NTLM hash to authenticate over SMB, and 'Pass-the-Ticket' (PtT), which uses stolen Kerberos tickets to access domain resources. This allows attackers to pivot using credentials dumped from memory or the SAM database."
+    },
+    {
+      "key": "T1560",
+      "tactic": "TA0009",
+      "description": "### Archive Collected Data\nAdversaries may compress or encrypt data they have collected into archives to make it easier to move and to hide its contents. Using utilities like ZIP, RAR, or TAR, they can bundle large numbers of files into a single object. This often includes password-protecting the archive to prevent security tools from scanning the contents during the exfiltration phase."
+    },
+    {
+      "key": "T1123",
+      "tactic": "TA0009",
+      "description": "### Audio Capture\nAdversaries may use a device's peripheral microphone to record audio from the environment. This technique allows them to eavesdrop on sensitive conversations occurring near the compromised system, such as business meetings or private calls. The recorded audio is typically stored locally in a temporary file before being sent back to the attacker's command and control server."
+    },
+    {
+      "key": "T1119",
+      "tactic": "TA0009",
+      "description": "### Automated Collection\nAdversaries may use scripts or specialized tools to automatically find and gather data based on specific criteria. For example, a script might be configured to scan all local drives and network shares for files containing keywords like 'password,' 'confidential,' or 'financial.' This automated approach allows for rapid data gathering across a large number of systems with minimal manual effort."
+    },
+    {
+      "key": "T1115",
+      "tactic": "TA0009",
+      "description": "### Clipboard Data\nAdversaries may collect data that a user has copied to their clipboard. This is a common method for stealing passwords, account numbers, and other sensitive strings that users frequently copy and paste between applications. By monitoring the clipboard, the attacker can capture information that might not otherwise be saved in a file or typed directly into a logged field."
+    },
+    {
+      "key": "T1530",
+      "tactic": "TA0009",
+      "description": "### Data from Cloud Storage\nAdversaries may gather data from cloud storage services like AWS S3, Azure Blobs, or Google Cloud Storage. If they obtain the necessary credentials or find misconfigured permissions, they can access vast repositories of sensitive data. This often includes database backups, source code, and enterprise-wide document stores that are hosted outside the traditional corporate perimeter."
+    },
+    {
+      "key": "T1213",
+      "tactic": "TA0009",
+      "description": "### Data from Information Repositories\nAdversaries may gather data from centralized internal platforms such as SharePoint, Confluence, and GitHub. These repositories are often 'gold mines' of information, containing technical specifications, network diagrams, and project plans. Attackers leverage these sites to gain deep insight into the target's internal operations and intellectual property."
+    },
+    {
+      "key": "T1005",
+      "tactic": "TA0009",
+      "description": "### Data from Local System\nAdversaries may search for and collect sensitive information residing on the local file system of a compromised host. This includes documents in the 'My Documents' folder, files on the desktop, and configuration files stored in application directories. The attacker typically looks for specific file extensions like .doc, .pdf, .txt, and .xls to identify high-value targets."
+    },
+    {
+      "key": "T1039",
+      "tactic": "TA0009",
+      "description": "### Data from Network Shared Drive\nAdversaries may crawl network shares (SMB/NFS) to collect data accessible to the compromised user. In many organizations, network shares contain a wealth of unstructured data that is poorly monitored. Attackers can pivot from a single workstation to gather data from departmental shares, executive folders, and backup repositories located across the internal network."
+    },
+    {
+      "key": "T1025",
+      "tactic": "TA0009",
+      "description": "### Data from Removable Media\nAdversaries may search for and collect data from removable storage devices like USB flash drives or external hard drives when they are connected to a compromised system. This allows them to bypass network-based security controls and access sensitive files that users may keep on portable media to avoid corporate storage policies."
+    },
+    {
+      "key": "T1114",
+      "tactic": "TA0009",
+      "description": "### Email Collection\nAdversaries may steal email data to gain insight into business operations and sensitive communications. This can involve accessing local Outlook PST files, logging into webmail accounts with stolen credentials, or using APIs to dump entire mailboxes from services like Microsoft 365 or Exchange. Stolen emails provide context for future social engineering and identify high-value targets."
+    },
+    {
+      "key": "T1125",
+      "tactic": "TA0009",
+      "description": "### Video Capture\nAdversaries may use a compromised system's built-in webcam to capture video or take still images of the environment. This can be used to visually confirm the identity of the user, monitor their physical surroundings, or capture sensitive information displayed on physical whiteboards or screens in the background."
+    },
+    {
+      "key": "T1113",
+      "tactic": "TA0009",
+      "description": "### Screen Capture\nAdversaries may take screenshots or record the screen of a compromised system to see what the user is doing in real-time. This is highly effective for capturing data from applications that don't save information to disk, such as secure messaging apps, ephemeral web sessions, or proprietary software interfaces. The images are typically staged before being exfiltrated."
+    },
+    {
+      "key": "T1074",
+      "tactic": "TA0009",
+      "description": "### Data Staged\nAdversaries may stage collected data in a central location on the network or the local system before exfiltrating it. Staging helps the attacker organize their findings and ensures that the exfiltration process is as efficient as possible. They often hide these staging areas in obscure directories (like /tmp or AppData) and may name the files to look like legitimate system logs or temporary data."
+    },
+    {
+      "key": "T1071",
+      "tactic": "TA0011",
+      "description": "### Application Layer Protocol\nAdversaries may communicate using application layer protocols to blend in with existing network traffic. Common protocols include HTTP, HTTPS, DNS, and SMTP. By using these standard ports and formats, attackers can bypass basic firewall rules and hide their Command and Control (C2) heartbeats within the noise of legitimate web browsing or email activity."
+    },
+    {
+      "key": "T1092",
+      "tactic": "TA0011",
+      "description": "### Communication Through Removable Media\nAdversaries may use removable media, such as USB drives, to relay commands and data to and from systems that are disconnected from the internet (air-gapped). The malware waits for a drive to be inserted, writes its data to a hidden area, and then waits for that same drive to be plugged into an internet-connected system to complete the communication loop."
+    },
+    {
+      "key": "T1132",
+      "tactic": "TA0011",
+      "description": "### Data Encoding\nAdversaries may use data encoding to hide the content of their C2 communications. Instead of sending commands in plain text, they may use Base64, Hex, or custom encoding schemes. This is done to evade signature-based network security tools and deep packet inspection (DPI) that look for specific keywords or known malicious command strings."
+    },
+    {
+      "key": "T1001",
+      "tactic": "TA0011",
+      "description": "### Data Obfuscation\nAdversaries may obfuscate their C2 traffic to make it harder to detect or analyze. This includes adding junk data to packets (padding), using steganography to hide commands inside image files, or mimicking the traffic patterns of legitimate applications (e.g., making C2 look like a streaming video or a legitimate software update)."
+    },
+    {
+      "key": "T1568",
+      "tactic": "TA0011",
+      "description": "### Dynamic Resolution\nAdversaries may use dynamic resolution to find their C2 infrastructure, making it harder for defenders to block specific IPs. Techniques include Domain Generation Algorithms (DGA), which programmatically create thousands of domain names, or 'DNS Birdwatching' where the IP is hidden in TXT records. This ensures that even if one domain is taken down, the malware can find a new path home."
+    },
+    {
+      "key": "T1573",
+      "tactic": "TA0011",
+      "description": "### Encrypted Channel\nAdversaries may use encryption to provide a secure and hidden communication channel between the compromised system and the C2 server. This can involve using standard protocols like SSL/TLS (HTTPS) or custom symmetric/asymmetric encryption. Encryption prevents network security appliances from seeing the actual commands or the data being exfiltrated."
+    },
+    {
+      "key": "T1105",
+      "tactic": "TA0011",
+      "description": "### Ingress Tool Transfer\nAdversaries may transfer tools or other files from an external system onto a compromised network. This is the 'download' portion of C2, where the attacker sends secondary payloads, specialized discovery tools, or credential dumpers to the victim machine. This is typically achieved via the established C2 channel or using utilities like `curl` or `bitsadmin`."
+    },
+    {
+      "key": "T1102",
+      "tactic": "TA0011",
+      "description": "### Web Service\nAdversaries may use legitimate web services to facilitate C2. Instead of a dedicated server, they might use social media platforms, code repositories (GitHub), or cloud storage (Google Drive) to host commands or stage data. Since these services are often trusted by organizations, the traffic is less likely to be blocked or scrutinized by security teams."
+    },
+    {
+      "key": "T1090",
+      "tactic": "TA0011",
+      "description": "### Proxy\nAdversaries may use proxies to obscure the direct connection between a compromised system and their C2 server. This can involve using internal system proxies, external web proxies, or 'multi-hop' proxies where traffic is routed through several compromised hosts. This layer of indirection makes it significantly harder for investigators to trace the true origin of the attacker."
+    },
+    {
+      "key": "T1219",
+      "tactic": "TA0011",
+      "description": "### Remote Access Software\nAdversaries may use legitimate, commercially available remote access tools (RATs) like TeamViewer, AnyDesk, or LogMeIn for C2. Since these tools are used by IT departments for support, their presence on a network might not immediately raise red flags. Attackers use them to gain full interactive control over a system's GUI or file system."
+    },
+    {
+      "key": "T1205",
+      "tactic": "TA0011",
+      "description": "### Traffic Signaling\nAdversaries may use traffic signaling, such as Port Knocking, to hide an open port or service. The system remains silent and doesn't respond to any traffic until it receives a specific sequence of packets (the 'knock'). Once the correct signal is received, the system opens a C2 channel, allowing the attacker to connect while remaining invisible to standard port scans."
+    },
+    {
+      "key": "T1020",
+      "tactic": "TA0010",
+      "description": "### Automated Exfiltration\nAdversaries may use scripts or specialized tools to automatically exfiltrate data from a compromised network. Once data is collected and staged, these tools can monitor for new files or specific conditions to trigger the transfer. Automation allows the attacker to steal large volumes of data quickly and efficiently without the need for manual intervention for every file transfer."
+    },
+    {
+      "key": "T1030",
+      "tactic": "TA0010",
+      "description": "### Data Transfer Size Limits\nAdversaries may split exfiltrated data into smaller chunks to avoid detection by network monitoring tools that look for large or unusual file transfers. By setting specific size limits for each packet or file segment, the attacker ensures that the traffic remains below the thresholds that might trigger an alert from a Data Loss Prevention (DLP) system or a network flow analyzer."
+    },
+    {
+      "key": "T1048",
+      "tactic": "TA0010",
+      "description": "### Exfiltration Over Alternative Protocol\nAdversaries may use a different protocol for exfiltration than the one used for Command and Control. For example, they might use FTP, SSH, or even DNS to move data out of the network. Using an alternative protocol can bypass security controls that are specifically tuned to monitor or block the primary C2 channel, making the data theft harder to correlate with other malicious activity."
+    },
+    {
+      "key": "T1041",
+      "tactic": "TA0010",
+      "description": "### Exfiltration Over C2 Channel\nAdversaries may use the existing Command and Control (C2) channel to steal data. Because this communication path is already established and has potentially been whitelisted or 'normalized' in the eyes of security tools, it provides a convenient and stealthy way to move data out of the organization. The stolen data is blended with the regular C2 heartbeats and command traffic."
+    },
+    {
+      "key": "T1011",
+      "tactic": "TA0010",
+      "description": "### Exfiltration Over Other Network Medium\nAdversaries may use alternative network mediums, such as a cellular modem, a separate Wi-Fi connection, or a Bluetooth link, to exfiltrate data. By bypassing the primary corporate network entirely, they can avoid all internal network-based security controls, firewalls, and logging mechanisms, making the theft of data nearly invisible to the organization's IT staff."
+    },
+    {
+      "key": "T1052",
+      "tactic": "TA0010",
+      "description": "### Exfiltration Over Physical Medium\nAdversaries may remove data from a network by copying it to a physical medium like a USB flash drive or an external hard drive. This is a common tactic for air-gapped systems that have no direct network connection to the outside world. The attacker (or an unwitting insider) physically carries the media out of the facility, bypassing all digital security boundaries."
+    },
+    {
+      "key": "T1567",
+      "tactic": "TA0010",
+      "description": "### Exfiltration Over Web Service\nAdversaries may use legitimate web services to exfiltrate data. By uploading stolen files to cloud storage platforms (like Dropbox or Google Drive), code repositories (GitHub), or even social media, they can disguise their activity as normal user behavior. Since these sites use HTTPS and are commonly accessed by employees, the exfiltration often goes unnoticed by standard traffic analysis."
+    },
+    {
+      "key": "T1029",
+      "tactic": "TA0010",
+      "description": "### Scheduled Transfer\nAdversaries may schedule exfiltration for specific times to avoid detection. For example, they might choose to transfer data during non-business hours when network traffic is generally lower, or during peak hours when the malicious traffic can blend in with a large volume of legitimate data. This temporal obfuscation helps them stay under the radar of behavioral monitoring tools."
+    },
+    {
+      "key": "T1537",
+      "tactic": "TA0010",
+      "description": "### Transfer Data to Cloud Account\nAdversaries may transfer stolen data directly to a cloud account they control. This is particularly effective in environments that already use cloud services, as the traffic to the cloud provider (e.g., AWS, Azure, or GCP) appears legitimate. If the attacker can use the organization's own cloud infrastructure to stage and then move the data, it becomes even harder to distinguish from authorized operations."
+    },
+    {
+      "key": "T1485",
+      "tactic": "TA0040",
+      "description": "### Data Destruction\nAdversaries may render stored data on a system or within an entire network unavailable by permanently deleting it. Unlike ransomware which seeks to extort the victim, the primary goal here is the total loss of information. This can be used to disrupt business operations, cover an attacker's tracks after an intrusion, or as a form of "
+    },
+    {
+      "key": "T1486",
+      "tactic": "TA0040",
+      "description": "### Data Encrypted for Impact\nAdversaries may encrypt data on target systems or remote storage to interrupt the availability of system and network resources. By using strong encryption algorithms and withholding the decryption key, attackers can demand a ransom for the restoration of access. This is the hallmark of ransomware campaigns, designed to cause significant financial and operational distress."
+    },
+    {
+      "key": "T1565",
+      "tactic": "TA0040",
+      "description": "### Data Manipulation\nAdversaries may insert, delete, or manipulate data to compromise its integrity. This can include modifying records in a database, changing configuration files, or altering web content. Such 'silent' attacks can lead to incorrect business decisions, financial loss, or reputational damage, as the victim may continue to rely on data that is no longer accurate."
+    },
+    {
+      "key": "T1491",
+      "tactic": "TA0040",
+      "description": "### Defacement\nAdversaries may modify the visual appearance of a website or other public-facing systems. Internal or external defacement is often used to send a political message, cause embarrassment to an organization, or signal that a breach has occurred. While the underlying data may remain intact, the loss of control over public assets causes immediate reputational harm."
+    },
+    {
+      "key": "T1499",
+      "tactic": "TA0040",
+      "description": "### Endpoint Denial of Service\nAdversaries may perform a Denial of Service (DoS) attack against a specific endpoint to make it unavailable to users. This involves exhausting system resources like CPU, memory, or disk space, or crashing critical services. By disabling key workstations or servers, attackers can prevent employees from working or stop automated business processes from functioning."
+    },
+    {
+      "key": "T1495",
+      "tactic": "TA0040",
+      "description": "### Firmware Corruption\nAdversaries may corrupt the firmware of a device to make it permanently unusable or to establish deep persistence. By overwriting the BIOS, UEFI, or other hardware-level controllers, the attacker can 'brick' the system, requiring physical hardware replacement to restore service. This is a high-impact technique used in destructive cyber warfare."
+    },
+    {
+      "key": "T1490",
+      "tactic": "TA0040",
+      "description": "### Inhibit System Recovery\nAdversaries may delete or remove built-in data buffers and recovery mechanisms, such as Windows Volume Shadow Copies or backup files. By destroying these safety nets, the attacker ensures that the victim cannot easily restore their systems to a previous state after a ransomware attack or a destructive 'wiper' event."
+    },
+    {
+      "key": "T1498",
+      "tactic": "TA0040",
+      "description": "### Network Denial of Service\nAdversaries may perform a Network Denial of Service (DoS) to degrade or block the availability of a service by exhausting network bandwidth. This is often achieved through flooding attacks (like ICMP or UDP floods) or resource exhaustion at the protocol level. A successful attack can take down web services, VPNs, and external communication channels for the entire organization."
+    },
+    {
+      "key": "T1496",
+      "tactic": "TA0040",
+      "description": "### Resource Hijacking\nAdversaries may leverage the resources of a compromised system for their own gain, such as 'Cryptojacking.' By using the victim's CPU and GPU power to mine cryptocurrency, the attacker generates profit while causing significant performance degradation and increased electricity costs for the target organization."
+    },
+    {
+      "key": "T1489",
+      "tactic": "TA0040",
+      "description": "### Service Stop\nAdversaries may stop critical services on a system to disrupt its functionality. By disabling antivirus agents, database engines, or web server processes, they can halt business operations or remove security protections. This technique is often used in conjunction with other impact methods to ensure a smooth execution of destructive tasks."
+    },
+    {
+      "key": "T1529",
+      "tactic": "TA0040",
+      "description": "### System Shutdown/Reboot\nAdversaries may bypass normal security controls to remotely shut down or reboot a system. This can be used to interrupt a long-running process, clear volatile memory to hide evidence, or as a precursor to firmware-level attacks. Frequent, unauthorized reboots can also serve as a form of harassment or operational disruption."
+    },
+    {
+      "key": "T1484",
+      "tactic": "TA0040",
+      "description": "### Account Access Removal\nAdversaries may interrupt the availability of system and network resources by inhibiting access to accounts. This involves changing passwords or deleting user accounts so that legitimate users can no longer log in. By locking out administrators during a crisis, the attacker can prolong the impact of their attack and prevent a rapid response."
+    }
+  ]
+}

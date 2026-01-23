@@ -45,6 +45,7 @@ templates = Jinja2Templates(directory=str(resources_dir / "templates"))
 # Request model for chatbot queries
 class ChatQuery(BaseModel):
     question: str
+    level: str = "L1"  # Default level
 
 # In-memory storage for chat sessions and their levels
 chat_levels = {}
@@ -68,7 +69,7 @@ async def read_item(request: Request):
 @app.post("/api/chat")
 async def chat(query: ChatQuery):
     try:
-        response_obj = get_chatbot_response(query.question)
+        response_obj = get_chatbot_response(query.question, query.level)
         # Extract content (handles AIMessage, str, etc.)
         if hasattr(response_obj, 'content'):
             response_text = response_obj.content
