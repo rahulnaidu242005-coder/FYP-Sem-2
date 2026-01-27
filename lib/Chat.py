@@ -9,7 +9,94 @@ from langchain.tools import tool
 from langchain_core.messages import HumanMessage, ToolMessage
 import logging
 
+# Global storage for uploaded data per session
+uploaded_data_storage = {}
 
+
+# Global storage for uploaded data per session
+uploaded_data_storage = {}
+
+def set_uploaded_data(session_id: str, data: dict):
+    """Store uploaded JSON data for a session"""
+    uploaded_data_storage[session_id] = data
+    logger.info(f"Stored uploaded data for session {session_id}")
+
+def get_uploaded_data(session_id: str) -> dict:
+    """Retrieve uploaded JSON data for a session"""
+    return uploaded_data_storage.get(session_id, None)
+
+def search_uploaded_data(session_id: str, query: str) -> str:
+    """Search through uploaded NetWitness session data and return relevant information"""
+    data = get_uploaded_data(session_id)
+    if not data:
+        return "No uploaded data available for this session."
+    
+    query_lower = query.lower()
+    results = []
+    
+    # Handle the case where data is a list of session records (like your example.json)
+    if isinstance(data, list) and len(data) > 0:
+        session_data = data[0]  # Get the first session record
+    elif isinstance(data, dict):
+        session_data = data
+    else:
+        return f"Unexpected data format: {type(data)}"
+    
+    def search_for_field(search_terms, field_hints):
+        """Search for specific fields in the session data"""
+        found_results = []
+        for key, values in session_data.items():
+            # Check if key matches our field hints
+            if any(hint in key.lower() for hint in field_hints):
+                # Check if any search term matches the key
+                if any(term in key.lower() for term in search_terms):
+                    if isinstance(values, list) and values:
+                        found_results.append(f"**{key}**: {values[0]}")
+                    else:
+                        found_results.append(f"**{key}**: {values}")
+        return found_results
+
+    # Enhanced search patterns for NetWitness data
+    if "source" in query_lower and "ip" in query_lower:
+        results.extend(search_for_field(["source", "src"], ["ip.src", "src", "source"]))
+    elif "destination" in query_lower and ("ip" in query_lower or "dst" in query_lower):
+        results.extend(search_for_field(["destination", "dst"], ["ip.dst", "dst", "destination"]))
+    elif "session" in query_lower and "id" in query_lower:
+        results.extend(search_for_field(["session"], ["sessionid", "session"]))
+    elif "port" in query_lower:
+        results.extend(search_for_field(["port"], ["tcp.srcport", "tcp.dstport", "port"]))
+    elif "domain" in query_lower or "hostname" in query_lower:
+        results.extend(search_for_field(["domain", "host"], ["domain", "alias.host", "hostname"]))
+    elif "file" in query_lower:
+        results.extend(search_for_field(["file"], ["filename", "attachment", "filetype"]))
+    elif "user" in query_lower or "agent" in query_lower:
+        results.extend(search_for_field(["user", "agent"], ["user.agent", "client", "browserprint"]))
+    elif "attack" in query_lower or "tactic" in query_lower:
+        results.extend(search_for_field(["attack", "tactic"], ["attack.tactic", "attack.technique", "attack.tid"]))
+    elif "service" in query_lower or "protocol" in query_lower:
+        results.extend(search_for_field(["service", "protocol"], ["service", "ip.proto", "protocol"]))
+    elif "alert" in query_lower:
+        results.extend(search_for_field(["alert"], ["alert", "alert.id"]))
+    else:
+        # Generic search through all fields
+        for key, values in session_data.items():
+            # Search for query terms in key names or values
+            if any(term in key.lower() for term in query_lower.split()):
+                if isinstance(values, list) and values:
+                    results.append(f"**{key}**: {values[0]}")
+                else:
+                    results.append(f"**{key}**: {values}")
+                if len(results) >= 10:  # Limit results
+                    break
+    
+    if results:
+        unique_results = list(dict.fromkeys(results))  # Remove duplicates while preserving order
+        return "\n".join(unique_results[:10])  # Limit to 10 results
+    else:
+        # Provide helpful information about available data
+        available_keys = list(session_data.keys())[:10]
+        return f"No matches found for '{query}'. Available data fields include: {', '.join(available_keys)}. Try asking about: source IP, destination IP, domain, filename, attack tactics, alerts, ports, or protocols."
+    
 NETWITNESS_CLIENT_INSTANCE = NetWitnessClient()
 
 # Setup logging FIRST
@@ -72,11 +159,22 @@ def get_token(username: str = "your_username", password: str = "your_password") 
     return token_str
 
 token = get_token(username=USERNAME, password=PASSWORD)
+
+@tool
+def search_uploaded_json(session_id: str, query: str) -> str:
+    """Search through uploaded JSON data (NetWitness session data) for specific information.
+    Args:
+        session_id (str): The session identifier for the uploaded data.
+        query (str): What to search for (e.g., 'source IP', 'destination IP', 'domain', 'filename', 'attack tactic').
+    Returns:
+        str: Relevant data matching the query from the uploaded JSON."""
+    return search_uploaded_data(session_id, query)
+
 model = ChatOllama(
     model="ALIENTELLIGENCE/cybersecuritythreatanalysisv2"
-).bind_tools([inject_runtime_token(token)])
+).bind_tools([inject_runtime_token(token), search_uploaded_json])
 
-def get_chatbot_response(question: str, level: str = "L1") -> str:
+def get_chatbot_response(question: str, level: str = "L1", session_id: str = None) -> str:
     # 1) Setup logging once for the whole app
     log_config = LoggerCustom("app.log")
     log_config.setup_logging()
@@ -92,6 +190,17 @@ def get_chatbot_response(question: str, level: str = "L1") -> str:
     logger.info("===== Netty SOC Assistant starting up =====")
     logger.info(f"\nUsing level: {level}")
 
+    # Check for uploaded data
+    uploaded_data_context = ""
+    if session_id:
+        uploaded_data = get_uploaded_data(session_id)
+        if uploaded_data:
+            # Check if question is about uploaded data
+            data_keywords = ["source ip", "destination ip", "ip", "incident", "log", "event", "file", "data", "upload"]
+            if any(keyword in question.lower() for keyword in data_keywords):
+                data_search_result = search_uploaded_data(session_id, question)
+                uploaded_data_context = f"\n\n=== UPLOADED DATA ANALYSIS ===\n{data_search_result}\n"
+    
     template = """
     
      You are 'Netty', a SOC AI Assistant supporting L1, L2, and L3 analysts in an enterprise Security Operations Centre (SOC).
@@ -103,16 +212,30 @@ def get_chatbot_response(question: str, level: str = "L1") -> str:
     - Do NOT say you are an AI model.
     - Be operational, specific, and actionable.
     - Never fabricate vendor-specific API endpoints or parameter names not present in context.
+    - You only have access to this call_api tool to get incident data from NetWitness.
+    - Do not use any other tools.
  
     CONTEXT USAGE
-    - The following context is the primary knowledge base for NetWitness APIs and SOC runbooks:
-    {context}
     - The following context is the primary knowledge base for NetWitness Metakeys. If the user asks for a definition or
     explanation of a Metakey, prioritize using this context. If the user asks for a definition or explanation of a Metakey
     that is not present in the context, respond with "I'm sorry, I don't have information on that Metakey.":
     {context}
  
     DECISION LOGIC (VERY IMPORTANT)
+    
+    0) UPLOADED DATA MODE (HIGHEST PRIORITY):
+    Use this mode if:
+    - The analyst asks about uploaded data, incident files, or information from a JSON file they uploaded
+    - Questions about "Source IP", "Destination IP", or any fields that might be in uploaded incident data
+    - The UPLOADED DATA ANALYSIS section contains relevant information
+    
+    In UPLOADED DATA MODE:
+    - ALWAYS prioritize information from the UPLOADED DATA ANALYSIS section over general knowledge
+    - Provide specific field values and paths from the uploaded data
+    - If multiple matching fields exist, list all relevant ones
+    - Format responses clearly with field names and values
+    - If no uploaded data is available, inform the user they need to upload a JSON file first
+    
     1) METAKEY LOOKUP MODE (RAG-STRICT):
     Use this mode if:
     - The analyst asks about a "metakey", "key", "field name", or describes looking for a specific NetWitness field
@@ -350,6 +473,7 @@ def get_chatbot_response(question: str, level: str = "L1") -> str:
     context = (
         "\n\n=== META KEYS KB (metakeys.json) ===\n"
         + context_meta
+        + uploaded_data_context
     )
     logger.info("Context prepared for prompt")
 

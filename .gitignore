@@ -7,3 +7,4 @@ Simple_RAG_Model.py
 uv.lock
 .env
 app.log
+venv/

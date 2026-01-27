@@ -51,6 +51,15 @@
             <button class="level-btn" data-level="L3" id="levelL3">L3</button>
           </div>
         </div>
+        
+        <div class="file-upload-section">
+          <div class="upload-container">
+            <input type="file" id="fileInput" accept=".json" style="display: none;">
+            <button class="upload-btn" id="uploadBtn">📁 Upload JSON File</button>
+            <span class="upload-status" id="uploadStatus"></span>
+          </div>
+        </div>
+        
         <div class="input-row">
           <input type="text" id="queryInput" placeholder="What would you like to know?" aria-label="query input" />
           <button class="send" id="sendBtn">➤</button>
@@ -68,9 +77,13 @@
     const chatHistory = document.getElementById('chatHistory');
     const newChatBtn = document.getElementById('newChatBtn');
     const chatsList = document.getElementById('chatsList');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const uploadStatus = document.getElementById('uploadStatus');
 
     let currentChatId = null;
     let currentLevel = 'L1';
+    let currentSessionId = null;
     let chats = JSON.parse(localStorage.getItem('chats')) || {};
     let chatCount = parseInt(localStorage.getItem('chatCount')) || 0;
 
@@ -78,6 +91,7 @@
     function initApp() {
       renderChatList();
       setupLevelButtons();
+      setupFileUpload();
       // If there are no chats, create a new one
       if (Object.keys(chats).length === 0) {
         createNewChat();
@@ -130,18 +144,24 @@
     }
 
     // Create a new chat
-    function createNewChat() {
+    async function createNewChat() {
       chatCount++;
       const chatId = 'chat_' + chatCount;
       const timestamp = new Date().toLocaleString();
+      
+      // Create new session
+      const sessionId = await createSession();
+      
       chats[chatId] = {
         id: chatId,
         name: 'Chat ' + chatCount,
         timestamp: timestamp,
         messages: [],
-        level: 'L1'
+        level: 'L1',
+        sessionId: sessionId
       };
       currentLevel = 'L1';
+      currentSessionId = sessionId;
       localStorage.setItem('chats', JSON.stringify(chats));
       localStorage.setItem('chatCount', chatCount);
       loadChat(chatId);
@@ -154,8 +174,13 @@
       
       currentChatId = chatId;
       currentLevel = chats[chatId].level || 'L1';
+      currentSessionId = chats[chatId].sessionId || null;
       updateLevelButtonUI();
       chatHistory.innerHTML = '';
+      
+      // Reset upload status when switching chats
+      uploadStatus.textContent = '';
+      uploadStatus.className = 'upload-status';
       
       // Display all messages from this chat
       const chatMessages = chats[chatId].messages;
@@ -344,7 +369,7 @@
       }, 0);
 
       try {
-        // Send to server with current level
+        // Send to server with current level and session
         const response = await fetch('/api/chat', {
           method: 'POST',
           headers: {
@@ -352,7 +377,8 @@
           },
           body: JSON.stringify({
             question: question,
-            level: currentLevel
+            level: currentLevel,
+            session_id: currentSessionId
           })
         });
 
@@ -374,30 +400,13 @@
         botMsgDiv.innerHTML = formattedResponse;
         chatHistory.appendChild(botMsgDiv);
 
-        // Generate chat title from first response if this is the first message
+        // Save messages to current chat with a simple title
         if (chats[currentChatId] && chats[currentChatId].messages && chats[currentChatId].messages.length === 0) {
-          try {
-            const titleResponse = await fetch('/api/chat', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                question: `Generate a concise title (max 50 characters) for a chat about: ${question}. Only respond with the title, nothing else.`,
-                level: currentLevel
-              })
-            });
-
-            const titleData = await titleResponse.json();
-            if (titleData.response) {
-              const title = titleData.response.trim().substring(0, 50);
-              chats[currentChatId].name = title;
-              localStorage.setItem('chats', JSON.stringify(chats));
-              renderChatList();
-            }
-          } catch (e) {
-            console.log('Could not generate title:', e);
-          }
+          // Use first few words of the question as title instead of generating
+          const title = question.substring(0, 47) + (question.length > 47 ? '...' : '');
+          chats[currentChatId].name = title;
+          localStorage.setItem('chats', JSON.stringify(chats));
+          renderChatList();
         }
 
         // Save messages to current chat
@@ -419,6 +428,90 @@
       } finally {
         sendBtn.disabled = false;
         queryInput.focus();
+      }
+    }
+
+    // Session management functions
+    async function createSession() {
+      try {
+        const response = await fetch('/api/chat-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        currentSessionId = data.session_id;
+        return data.session_id;
+      } catch (error) {
+        console.error('Error creating session:', error);
+        return null;
+      }
+    }
+
+    // File upload functions
+    function setupFileUpload() {
+      uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', handleFileUpload);
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file type
+      if (!file.name.endsWith('.json')) {
+        uploadStatus.textContent = 'Please select a JSON file';
+        uploadStatus.className = 'upload-status error';
+        return;
+      }
+
+      // Show upload in progress
+      uploadStatus.textContent = 'Uploading...';
+      uploadStatus.className = 'upload-status uploading';
+
+      try {
+        // Ensure we have a session
+        if (!currentSessionId) {
+          currentSessionId = await createSession();
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('session_id', currentSessionId);
+
+        const response = await fetch('/api/upload-file', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          uploadStatus.textContent = `✓ ${result.filename} uploaded`;
+          uploadStatus.className = 'upload-status success';
+          
+          // Add system message to chat history
+          removeHero();
+          const uploadMsgDiv = document.createElement('div');
+          uploadMsgDiv.className = 'message system-message';
+          uploadMsgDiv.innerHTML = `<em>📁 File "${result.filename}" uploaded successfully. You can now ask questions about the data.</em>`;
+          chatHistory.appendChild(uploadMsgDiv);
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+          
+          // Clear file input
+          fileInput.value = '';
+        } else {
+          uploadStatus.textContent = `Error: ${result.error}`;
+          uploadStatus.className = 'upload-status error';
+        }
+      } catch (error) {
+        uploadStatus.textContent = 'Upload failed';
+        uploadStatus.className = 'upload-status error';
+        console.error('File upload error:', error);
       }
     }
 
