@@ -8,3 +8,4 @@ fastapi
 starlette
 pydantic
 uvicorn
+python-dotenv
