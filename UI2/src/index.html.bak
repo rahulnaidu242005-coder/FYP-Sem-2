@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans:300,400,700&display=swap" rel="stylesheet" />
+  <link href="/static/css/main.css" rel="stylesheet" />
+  <title>Netty — NetWitness Assistant</title>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="top-banner">
+        <div class="banner-logo"><img src="/static/images/logo.png" alt="Netty logo"/></div>
+        <div class="banner-text">
+          <h2>NETWITNESS Assistant</h2>
+          <p>Netty</p>
+        </div>
+      </div>
+
+      <nav class="menu">
+        <ul>
+          <li class="menu-item" id="newChatBtn">New Chat</li>
+        </ul>
+      </nav>
+
+      <div class="chats">
+        <h4>Chats</h4>
+        <ul id="chatsList">
+        </ul>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="chat-history" id="chatHistory">
+        <div class="hero">
+          <div class="hero-avatar"><img src="/static/images/logo.png" alt="avatar"/></div>
+          <div class="hero-text">
+            <h1>Hi, <span id="username">user</span>, I am Netty!</h1>
+            <p class="subtitle">What shall we do today?</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="level-selector">
+          <span class="level-label">Analyst Level:</span>
+          <div class="level-buttons">
+            <button class="level-btn" data-level="L1" id="levelL1">L1</button>
+            <button class="level-btn" data-level="L2" id="levelL2">L2</button>
+            <button class="level-btn" data-level="L3" id="levelL3">L3</button>
+          </div>
+        </div>
+        
+        <div class="file-upload-section">
+          <div class="upload-container">
+            <input type="file" id="fileInput" accept=".json" style="display: none;">
+            <button class="upload-btn" id="uploadBtn">📁 Upload JSON File</button>
+            <span class="upload-status" id="uploadStatus"></span>
+          </div>
+        </div>
+        
+        <div class="input-row">
+          <input type="text" id="queryInput" placeholder="What would you like to know?" aria-label="query input" />
+          <button class="send" id="sendBtn">➤</button>
+        </div>
+
+        <div class="actions">
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const queryInput = document.getElementById('queryInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatHistory = document.getElementById('chatHistory');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const chatsList = document.getElementById('chatsList');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const uploadStatus = document.getElementById('uploadStatus');
+
+    let currentChatId = null;
+    let currentLevel = 'L1';
+    let currentSessionId = null;
+    let chats = JSON.parse(localStorage.getItem('chats')) || {};
+    let chatCount = parseInt(localStorage.getItem('chatCount')) || 0;
+
+    // Initialize app
+    function initApp() {
+      renderChatList();
+      setupLevelButtons();
+      setupFileUpload();
+      // If there are no chats, create a new one
+      if (Object.keys(chats).length === 0) {
+        createNewChat();
+      }
+    }
+
+    // Setup level button event listeners
+    function setupLevelButtons() {
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const newLevel = btn.getAttribute('data-level');
+          switchLevel(newLevel);
+        });
+      });
+      updateLevelButtonUI();
+    }
+
+    // Switch level for current chat
+    function switchLevel(newLevel) {
+      if (!currentChatId || !['L1', 'L2', 'L3'].includes(newLevel)) return;
+      
+      currentLevel = newLevel;
+      
+      // Store level with chat
+      if (chats[currentChatId]) {
+        chats[currentChatId].level = newLevel;
+        localStorage.setItem('chats', JSON.stringify(chats));
+      }
+      
+      updateLevelButtonUI();
+      
+      // Show level change notification in chat
+      removeHero();
+      const notificationDiv = document.createElement('div');
+      notificationDiv.className = 'message system-message';
+      notificationDiv.innerHTML = `<em>Analyst level switched to <strong>${newLevel}</strong>. Responses will now reflect ${newLevel === 'L1' ? 'basic guidance' : newLevel === 'L2' ? 'investigation details' : 'advanced threat hunting'} depth.</em>`;
+      chatHistory.appendChild(notificationDiv);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    // Update level button UI to show current level
+    function updateLevelButtonUI() {
+      document.querySelectorAll('.level-btn').forEach(btn => {
+        if (btn.getAttribute('data-level') === currentLevel) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // Create a new chat
+    async function createNewChat() {
+      chatCount++;
+      const chatId = 'chat_' + chatCount;
+      const timestamp = new Date().toLocaleString();
+      
+      // Create new session
+      const sessionId = await createSession();
+      
+      chats[chatId] = {
+        id: chatId,
+        name: 'Chat ' + chatCount,
+        timestamp: timestamp,
+        messages: [],
+        level: 'L1',
+        sessionId: sessionId
+      };
+      currentLevel = 'L1';
+      currentSessionId = sessionId;
+      localStorage.setItem('chats', JSON.stringify(chats));
+      localStorage.setItem('chatCount', chatCount);
+      loadChat(chatId);
+      renderChatList();
+    }
+
+    // Load a chat
+    function loadChat(chatId) {
+      if (!chats[chatId]) return;
+      
+      currentChatId = chatId;
+      currentLevel = chats[chatId].level || 'L1';
+      currentSessionId = chats[chatId].sessionId || null;
+      updateLevelButtonUI();
+      chatHistory.innerHTML = '';
+      
+      // Reset upload status when switching chats
+      uploadStatus.textContent = '';
+      uploadStatus.className = 'upload-status';
+      
+      // Display all messages from this chat
+      const chatMessages = chats[chatId].messages;
+      if (chatMessages.length === 0) {
+        // Show hero if no messages
+        chatHistory.innerHTML = `
+          <div class="hero">
+            <div class="hero-avatar"><img src="/static/images/logo.png" alt="avatar"/></div>
+            <div class="hero-text">
+              <h1>Hi, <span id="username">user</span>, I am Netty!</h1>
+              <p class="subtitle">What shall we do today?</p>
+            </div>
+          </div>
+        `;
+      } else {
+        // Display all messages
+        chatMessages.forEach(msg => {
+          const msgDiv = document.createElement('div');
+          msgDiv.className = 'message ' + msg.type;
+          // Use innerHTML for bot messages to preserve formatting, textContent for user messages
+          if (msg.type === 'bot-message') {
+            msgDiv.innerHTML = msg.content;
+          } else {
+            msgDiv.textContent = msg.content;
+          }
+          chatHistory.appendChild(msgDiv);
+        });
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }
+      
+      // Highlight current chat
+      document.querySelectorAll('#chatsList li').forEach(li => {
+        li.classList.remove('active');
+      });
+      const activeChat = document.querySelector(`[data-chat-id="${chatId}"]`);
+      if (activeChat) {
+        activeChat.classList.add('active');
+      }
+    }
+
+    // Delete chat function
+    function deleteChat(chatId, event) {
+      event.stopPropagation(); // Prevent triggering loadChat
+      const wasActive = (currentChatId === chatId);
+      delete chats[chatId];
+      
+      // Renumber remaining chats sequentially
+      const chatIds = Object.keys(chats);
+      let newIndex = 1;
+      chatIds.forEach((id) => {
+        chats[id].name = 'Chat ' + newIndex;
+        newIndex++;
+      });
+      chatCount = chatIds.length;
+      
+      localStorage.setItem('chats', JSON.stringify(chats));
+      localStorage.setItem('chatCount', chatCount);
+      
+      // If deleted chat was active, load first available chat or create new one
+      if (wasActive) {
+        const remainingIds = Object.keys(chats);
+        if (remainingIds.length > 0) {
+          loadChat(remainingIds[0]);
+          renderChatList();
+        } else {
+          createNewChat();
+        }
+      } else {
+        renderChatList();
+      }
+    }
+
+    // Render chat list
+    function renderChatList() {
+      chatsList.innerHTML = '';
+      Object.keys(chats).forEach(chatId => {
+        const chat = chats[chatId];
+        const li = document.createElement('li');
+        li.setAttribute('data-chat-id', chatId);
+        li.className = 'chat-item';
+        if (currentChatId === chatId) li.classList.add('active');
+        li.innerHTML = `<span>${chat.name}</span><button class="delete-btn" title="Delete chat">✕</button>`;
+        
+        // Click on chat name to load chat
+        li.querySelector('span').addEventListener('click', (e) => {
+          e.stopPropagation();
+          saveChatMessages();
+          loadChat(chatId);
+        });
+        
+        // Delete button click handler
+        li.querySelector('.delete-btn').addEventListener('click', (e) => {
+          deleteChat(chatId, e);
+        });
+        
+        chatsList.appendChild(li);
+      });
+    }
+
+    // Save current chat messages
+    function saveChatMessages() {
+      if (!currentChatId || !chats[currentChatId]) return;
+      const messages = [];
+      document.querySelectorAll('#chatHistory .message').forEach(msgDiv => {
+        // Skip hero, thinking indicators, and system messages
+        if (!msgDiv.closest('.hero') && !msgDiv.classList.contains('thinking') && !msgDiv.classList.contains('system-message')) {
+          const isUserMessage = msgDiv.classList.contains('user-message');
+          messages.push({
+            type: isUserMessage ? 'user-message' : 'bot-message',
+            // For bot messages, preserve HTML formatting; for user messages, use text content
+            content: isUserMessage ? msgDiv.textContent : msgDiv.innerHTML
+          });
+        }
+      });
+      chats[currentChatId].messages = messages;
+      localStorage.setItem('chats', JSON.stringify(chats));
+    }
+
+    // Remove hero element
+    function removeHero() {
+      const hero = chatHistory.querySelector('.hero');
+      if (hero) {
+        hero.remove();
+      }
+    }
+
+    // Send message function
+    async function sendMessage() {
+      const question = queryInput.value.trim();
+      if (!question) return;
+
+      // Check for level switching commands
+      const levelSwitchMatch = question.match(/^switch\s+to\s+(l[123]|L[123])/i);
+      if (levelSwitchMatch) {
+        const newLevel = levelSwitchMatch[1].toUpperCase();
+        queryInput.value = '';
+        switchLevel(newLevel);
+        return;
+      }
+
+      // Alternative syntax: just "L1", "L2", or "L3"
+      if (/^l[123]$/i.test(question)) {
+        const newLevel = question.toUpperCase();
+        queryInput.value = '';
+        switchLevel(newLevel);
+        return;
+      }
+
+      // Check if we've reached 7 queries, if so reset the chat
+      const userMessageCount = Array.from(document.querySelectorAll('#chatHistory .message.user-message')).length;
+      if (userMessageCount >= 7 && chats[currentChatId]) {
+        // Reset chat after 7 queries
+        chats[currentChatId].messages = [];
+        chatHistory.innerHTML = '';
+        localStorage.setItem('chats', JSON.stringify(chats));
+      }
+
+      // Remove hero on first message
+      removeHero();
+
+      // Add user message to chat
+      const userMsgDiv = document.createElement('div');
+      userMsgDiv.className = 'message user-message';
+      userMsgDiv.textContent = question;
+      chatHistory.appendChild(userMsgDiv);
+      
+      // Scroll to bottom immediately
+      setTimeout(() => {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }, 0);
+
+      // Clear input
+      queryInput.value = '';
+      sendBtn.disabled = true;
+
+      // Create thinking indicator
+      const thinkingDiv = document.createElement('div');
+      thinkingDiv.className = 'message bot-message thinking';
+      thinkingDiv.id = 'thinkingIndicator';
+      thinkingDiv.innerHTML = '<span class="thinking-dots"><span></span><span></span><span></span></span>';
+      chatHistory.appendChild(thinkingDiv);
+      
+      // Scroll to thinking indicator
+      setTimeout(() => {
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      }, 0);
+
+      try {
+        // Send to server with current level and session
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            question: question,
+            level: currentLevel,
+            session_id: currentSessionId
+          })
+        });
+
+        const data = await response.json();
+
+        // Remove thinking indicator
+        const thinkingIndicator = document.getElementById('thinkingIndicator');
+        if (thinkingIndicator) {
+          thinkingIndicator.remove();
+        }
+
+        // Format the response to convert **text** to <strong> tags
+        let formattedResponse = data.response || (data.error || 'Error getting response');
+        formattedResponse = formattedResponse.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Add bot response to chat
+        const botMsgDiv = document.createElement('div');
+        botMsgDiv.className = 'message bot-message';
+        botMsgDiv.innerHTML = formattedResponse;
+        chatHistory.appendChild(botMsgDiv);
+
+        // Save messages to current chat with a simple title
+        if (chats[currentChatId] && chats[currentChatId].messages && chats[currentChatId].messages.length === 0) {
+          // Use first few words of the question as title instead of generating
+          const title = question.substring(0, 47) + (question.length > 47 ? '...' : '');
+          chats[currentChatId].name = title;
+          localStorage.setItem('chats', JSON.stringify(chats));
+          renderChatList();
+        }
+
+        // Save messages to current chat
+        saveChatMessages();
+
+        // Scroll to bottom
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      } catch (error) {
+        // Remove thinking indicator on error
+        const thinkingIndicator = document.getElementById('thinkingIndicator');
+        if (thinkingIndicator) {
+          thinkingIndicator.remove();
+        }
+
+        const errorMsgDiv = document.createElement('div');
+        errorMsgDiv.className = 'message bot-message error';
+        errorMsgDiv.textContent = 'Error: ' + error.message;
+        chatHistory.appendChild(errorMsgDiv);
+      } finally {
+        sendBtn.disabled = false;
+        queryInput.focus();
+      }
+    }
+
+    // Session management functions
+    async function createSession() {
+      try {
+        const response = await fetch('/api/chat-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        const data = await response.json();
+        currentSessionId = data.session_id;
+        return data.session_id;
+      } catch (error) {
+        console.error('Error creating session:', error);
+        return null;
+      }
+    }
+
+    // File upload functions
+    function setupFileUpload() {
+      uploadBtn.addEventListener('click', () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener('change', handleFileUpload);
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file type
+      if (!file.name.endsWith('.json')) {
+        uploadStatus.textContent = 'Please select a JSON file';
+        uploadStatus.className = 'upload-status error';
+        return;
+      }
+
+      // Show upload in progress
+      uploadStatus.textContent = 'Uploading...';
+      uploadStatus.className = 'upload-status uploading';
+
+      try {
+        // Ensure we have a session
+        if (!currentSessionId) {
+          currentSessionId = await createSession();
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('session_id', currentSessionId);
+
+        const response = await fetch('/api/upload-file', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          uploadStatus.textContent = `✓ ${result.filename} uploaded`;
+          uploadStatus.className = 'upload-status success';
+          
+          // Add system message to chat history
+          removeHero();
+          const uploadMsgDiv = document.createElement('div');
+          uploadMsgDiv.className = 'message system-message';
+          uploadMsgDiv.innerHTML = `<em>📁 File "${result.filename}" uploaded successfully. You can now ask questions about the data.</em>`;
+          chatHistory.appendChild(uploadMsgDiv);
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+          
+          // Clear file input
+          fileInput.value = '';
+        } else {
+          uploadStatus.textContent = `Error: ${result.error}`;
+          uploadStatus.className = 'upload-status error';
+        }
+      } catch (error) {
+        uploadStatus.textContent = 'Upload failed';
+        uploadStatus.className = 'upload-status error';
+        console.error('File upload error:', error);
+      }
+    }
+
+    // Event listeners
+    newChatBtn.addEventListener('click', () => {
+      saveChatMessages();
+      createNewChat();
+    });
+    
+    sendBtn.addEventListener('click', sendMessage);
+    queryInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    // Initialize on page load
+    initApp();
+  </script>
+</body>
+</html>
+
