@@ -9,3 +9,6 @@ starlette
 pydantic
 uvicorn
 python-dotenv
+httpx
+pygments
+Jinja2
