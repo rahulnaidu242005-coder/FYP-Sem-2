@@ -1,0 +1,1416 @@
+{ "metakeys":
+    [
+        {
+            "key": "access.point",
+            "definition": "Access Point"
+        },
+        {
+            "key": "accesses",
+            "definition": "Accesses"
+        },
+        {
+            "key": "action",
+            "definition": "Action"
+        },
+        {
+            "key": "ad.computer.dst",
+            "definition": "Active Directory Workstation Destination"
+        },
+        {
+            "key": "ad.computer.src",
+            "definition": "Active Directory Workstation Source"
+        },
+        {
+            "key": "ad.domain.dst",
+            "definition": "Active Directory Domain Destination"
+        },
+        {
+            "key": "ad.domain.src",
+            "definition": " Active Directory Domain Source"
+        },
+        {
+            "key": "ad.username.dst",
+            "definition": "Active Directory Username Destination"
+        },
+        {
+            "key": "ad.username.src",
+            "definition": "Active Directory Username Source"
+        },
+        {
+            "key": "agent.id",
+            "definition": "Agent Id"
+        },
+        {
+            "key": "alert",
+            "definition": "Alerts"
+        },
+        {
+            "key": "alert.id",
+            "definition": "Alert ID"
+        },
+        {
+            "key": "alias.host",
+            "definition": "Host ID"
+        },
+        {
+            "key": "alias.host.hash",
+            "definition": "Hostname Aliases Hash"
+        },
+        {
+            "key": "alias.ip",
+            "definition": "IP Aliases"
+        },
+        {
+            "key": "alias.ipv6",
+            "definition": "IPv6 Alliases"
+        },
+        {
+            "key": "alias.mac",
+            "definition": "MAC Alias Record"
+        },
+        {
+            "key": "analysis.all",
+            "definition": "All Analysis Keys"
+        },
+        {
+            "key": "analysis.context",
+            "definition": "Why should I care?"
+        },
+        {
+            "key": "analysis.desc",
+            "definition": "What is this?"
+        },
+        {
+            "key": "analysis.file",
+            "definition": "File Analysis"
+        },
+        {
+            "key": "analysis.next",
+            "definition": "What should I do?"
+        },
+        {
+            "key": "analysis.service",
+            "definition": "Service Analysis"
+        },
+        {
+            "key": "analysis.session",
+            "definition": "Session Analysis"
+        },
+        {
+            "key": "analysis.source",
+            "definition": "How did this get here?"
+        },
+        {
+            "key": "appid",
+            "definition": "Application Identification"
+        },
+        {
+            "key": "asset.bu",
+            "definition": "Business Unit - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.comp",
+            "definition": "Compliance - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.crit",
+            "definition": "Criticality - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.desc",
+            "definition": "Description- RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.escalate",
+            "definition": "Escalation - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.fac",
+            "definition": "Facility - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.group",
+            "definition": "Group - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.risk",
+            "definition": "Risk - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "asset.type",
+            "definition": "Type - RSA Archer IT Security and Risk Management"
+        },
+        {
+            "key": "attachment",
+            "definition": "Attachment"
+        },
+        {
+            "key": "attack.all",
+            "definition": "All ATT&CK Keys"
+        },
+        {
+            "key": "attack.tactic",
+            "definition": "ATT&CK Tactic"
+        },
+        {
+            "key": "attack.technique",
+            "definition": "ATT&CK Technique"
+        },
+        {
+            "key": "attack.tid",
+            "definition": "ATT&CK Technique ID"
+        },
+        {
+            "key": "auth.method",
+            "definition": "Auth Method - RSA SecurID Access"
+        },
+        {
+            "key": "autorun.type",
+            "definition": "Autorun Type"
+        },
+        {
+            "key": "boc",
+            "definition": "Behaviors of Compromise"
+        },
+        {
+            "key": "browser",
+            "definition": "Browsers"
+        },
+        {
+            "key": "bytes.src",
+            "definition": "Bytes Sent"
+        },
+        {
+            "key": "capture.port",
+            "definition": "Capture Interface"
+        },
+        {
+            "key": "category",
+            "definition": "Category"
+        },
+        {
+            "key": "cert.ca",
+            "definition": "Certificate Authority"
+        },
+        {
+            "key": "cert.checksum",
+            "definition": "Certificate Checksum"
+        },
+        {
+            "key": "cert.common",
+            "definition": "Certificate Common Name"
+        },
+        {
+            "key": "cert.common.dst",
+            "definition": " Certificate Common Name"
+        },
+        {
+            "key": "cert.common.src",
+            "definition": " Certificate Common Name Sourc"
+        },
+        {
+            "key": "cert.subject",
+            "definition": "Certifcate Subject"
+        },
+        {
+            "key": "cert.thumbprint",
+            "definition": "Certificate Thumbprint"
+        },
+        {
+            "key": "chat",
+            "definition": "Chat"
+        },
+        {
+            "key": "checksum",
+            "definition": "Checksum"
+        },
+        {
+            "key": "checksum.algo",
+            "definition": "Checksum Algorithm"
+        },
+        {
+            "key": "checksum.all",
+            "definition": "All Checksum Keys"
+        },
+        {
+            "key": "checksum.dst",
+            "definition": "Target Checksum"
+        },
+        {
+            "key": "checksum.src",
+            "definition": "Source Checksum"
+        },
+        {
+            "key": "cid",
+            "definition": "Concentrator Source"
+        },
+        {
+            "key": "city",
+            "definition": "City"
+        },
+        {
+            "key": "city.dst",
+            "definition": "Destination City"
+        },
+        {
+            "key": "city.src",
+            "definition": "Source City"
+        },
+        {
+            "key": "client",
+            "definition": "Agent  "
+        },
+        {
+            "key": "client.all",
+            "definition": "All Client Keys"
+        },
+        {
+            "key": "community.id",
+            "definition": "Community ID"
+        },
+        {
+            "key": "compromise.all",
+            "definition": "All Compromise Keys"
+        },
+        {
+            "key": "content",
+            "definition": "Content Type"
+        },
+        {
+            "key": "content.type",
+            "definition": "Content Type"
+        },
+        {
+            "key": "context",
+            "definition": "Context"
+        },
+        {
+            "key": "context.all",
+            "definition": "All Context Keys"
+        },
+        {
+            "key": "context.dst",
+            "definition": "Context Destination"
+        },
+        {
+            "key": "context.src",
+            "definition": "Context Source"
+        },
+        {
+            "key": "country",
+            "definition": "Country"
+        },
+        {
+            "key": "country.dst",
+            "definition": "Destination Country"
+        },
+        {
+            "key": "country.src",
+            "definition": "Source Country"
+        },
+        {
+            "key": "crypto",
+            "definition": "Cipher Name"
+        },
+        {
+            "key": "database",
+            "definition": "Database Name"
+        },
+        {
+            "key": "device.class",
+            "definition": "Device Class"
+        },
+        {
+            "key": "device.group",
+            "definition": "Event Source Group"
+        },
+        {
+            "key": "device.host",
+            "definition": "Device Host"
+        },
+        {
+            "key": "device.ip",
+            "definition": "Device IP"
+        },
+        {
+            "key": "device.ipv6",
+            "definition": "Device IPv6"
+        },
+        {
+            "key": "device.name",
+            "definition": "Device Name"
+        },
+        {
+            "key": "device.names",
+            "definition": "Device Names"
+        },
+        {
+            "key": "device.type",
+            "definition": "Device Type"
+        },
+        {
+            "key": "did",
+            "definition": "Decoder Source"
+        },
+        {
+            "key": "dinterface",
+            "definition": "Destination Interface"
+        },
+        {
+            "key": "dir.path",
+            "definition": "Directory Path"
+        },
+        {
+            "key": "dir.path.all",
+            "definition": "All Directory Path Keys"
+        },
+        {
+            "key": "dir.path.dst",
+            "definition": "Directory Path Destination"
+        },
+        {
+            "key": "dir.path.src",
+            "definition": "Directory Path Source"
+        },
+        {
+            "key": "direction",
+            "definition": "Direction"
+        },
+        {
+            "key": "directory",
+            "definition": "Directory"
+        },
+        {
+            "key": "directory.all",
+            "definition": "All Directory Keys"
+        },
+        {
+            "key": "directory.dst",
+            "definition": "Target File Directory"
+        },
+        {
+            "key": "directory.src",
+            "definition": "Source File Directory"
+        },
+        {
+            "key": "disposition",
+            "definition": "Disposition"
+        },
+        {
+            "key": "dn",
+            "definition": "Domain OU"
+        },
+        {
+            "key": "domain",
+            "definition": "Domain"
+        },
+        {
+            "key": "domain.all",
+            "definition": "All Domain Keys"
+        },
+        {
+            "key": "domain.dst",
+            "definition": "Destination Domain"
+        },
+        {
+            "key": "domain.src",
+            "definition": "Source Domain"
+        },
+        {
+            "key": "dtransaddr",
+            "definition": "Destination Translated Address"
+        },
+        {
+            "key": "dtransport",
+            "definition": "Translated Destination Port"
+        },
+        {
+            "key": "ec.activity",
+            "definition": "Event Activity"
+        },
+        {
+            "key": "ec.all",
+            "definition": "All Event Catagorization Keys"
+        },
+        {
+            "key": "ec.outcome",
+            "definition": "Event Outcome"
+        },
+        {
+            "key": "ec.subject",
+            "definition": "Event Subject"
+        },
+        {
+            "key": "ec.theme",
+            "definition": "Event Theme"
+        },
+        {
+            "key": "ecat.ctime",
+            "definition": "NWE Connectiontime"
+        },
+        {
+            "key": "ecat.stime",
+            "definition": "NWE Scantime"
+        },
+        {
+            "key": "email",
+            "definition": "E-mail Address"
+        },
+        {
+            "key": "email.all",
+            "definition": "All Email Address Keys"
+        },
+        {
+            "key": "email.dst",
+            "definition": "To Email Address"
+        },
+        {
+            "key": "email.src",
+            "definition": "From Email Address"
+        },
+        {
+            "key": "entropy.req",
+            "definition": "Entropy Request (Client)"
+        },
+        {
+            "key": "entropy.res",
+            "definition": "Entropy Response (Server)"
+        },
+        {
+            "key": "eoc",
+            "definition": "Enablers of Compromise"
+        },
+        {
+            "key": "error",
+            "definition": "Errors"
+        },
+        {
+            "key": "eth.all",
+            "definition": "All Ethernet Address Keys"
+        },
+        {
+            "key": "eth.dst",
+            "definition": "Destination MacAddress"
+        },
+        {
+            "key": "eth.src",
+            "definition": "Source MacAddress"
+        },
+        {
+            "key": "eth.type",
+            "definition": "Ethernet Protocol"
+        },
+        {
+            "key": "event.cat.name",
+            "definition": "Event Category Name"
+        },
+        {
+            "key": "event.class",
+            "definition": "Event Classification"
+        },
+        {
+            "key": "event.computer",
+            "definition": "Event Computer"
+        },
+        {
+            "key": "event.desc",
+            "definition": "Event Description"
+        },
+        {
+            "key": "event.source",
+            "definition": "Event Source"
+        },
+        {
+            "key": "event.state",
+            "definition": "Event State"
+        },
+        {
+            "key": "event.time",
+            "definition": "Event Time"
+        },
+        {
+            "key": "event.type",
+            "definition": "Event Type"
+        },
+        {
+            "key": "event.user",
+            "definition": "Event User"
+        },
+        {
+            "key": "extension",
+            "definition": "Extension"
+        },
+        {
+            "key": "fd.cat",
+            "definition": "Custom Feed Category"
+        },
+        {
+            "key": "fd.desc",
+            "definition": "Custom Feed Description"
+        },
+        {
+            "key": "fd.name",
+            "definition": "Custom Feed Name"
+        },
+        {
+            "key": "feed.category",
+            "definition": "Feed Category"
+        },
+        {
+            "key": "feed.desc",
+            "definition": "Feed Description"
+        },
+        {
+            "key": "feed.name",
+            "definition": "Feed Name"
+        },
+        {
+            "key": "file.attributes",
+            "definition": "File Attributes"
+        },
+        {
+            "key": "file.cat",
+            "definition": "File Category"
+        },
+        {
+            "key": "file.cat.dst",
+            "definition": "File Category Destination"
+        },
+        {
+            "key": "file.cat.src",
+            "definition": "File Category Source"
+        },
+        {
+            "key": "file.entropy",
+            "definition": "File Entropy"
+        },
+        {
+            "key": "file.vendor",
+            "definition": "File Vendor"
+        },
+        {
+            "key": "filename",
+            "definition": "Filename"
+        },
+        {
+            "key": "filename.all",
+            "definition": "All Filename Keys"
+        },
+        {
+            "key": "filename.dst",
+            "definition": "Filename Destination"
+        },
+        {
+            "key": "filename.int",
+            "definition": "Filename"
+        },
+        {
+            "key": "filename.size",
+            "definition": "File Size"
+        },
+        {
+            "key": "filename.src",
+            "definition": "Filename Source"
+        },
+        {
+            "key": "filetype",
+            "definition": "Forensic Fingerprint"
+        },
+        {
+            "key": "filter",
+            "definition": "Filter"
+        },
+        {
+            "key": "forward.ip",
+            "definition": "Event Relay IPv4 Address"
+        },
+        {
+            "key": "forward.ipv6",
+            "definition": "Event Relay IPv6 Address"
+        },
+        {
+            "key": "found",
+            "definition": "Found Search"
+        },
+        {
+            "key": "fqdn",
+            "definition": "FQDN"
+        },
+        {
+            "key": "fullname",
+            "definition": "Full Name"
+        },
+        {
+            "key": "fullname.all",
+            "definition": "All Fullname Keys"
+        },
+        {
+            "key": "fullname.dst",
+            "definition": "Full Name Dest"
+        },
+        {
+            "key": "fullname.src",
+            "definition": "Full Name Source"
+        },
+        {
+            "key": "function",
+            "definition": "Function"
+        },
+        {
+            "key": "gateway",
+            "definition": "Gateway"
+        },
+        {
+            "key": "group",
+            "definition": "Group"
+        },
+        {
+            "key": "host.all",
+            "definition": "All Hostname Keys"
+        },
+        {
+            "key": "host.dst",
+            "definition": "Destination Hostname"
+        },
+        {
+            "key": "host.orig",
+            "definition": "Hostname Originating"
+        },
+        {
+            "key": "host.role",
+            "definition": "Host Role"
+        },
+        {
+            "key": "host.src",
+            "definition": "Source Host"
+        },
+        {
+            "key": "host.state",
+            "definition": "Machine State"
+        },
+        {
+            "key": "identity.acctrev",
+            "definition": "Last Account Review - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.acctrsk",
+            "definition": "Account Risk - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.acct_o",
+            "definition": "Service Account Owner - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.app",
+            "definition": "Application - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.cpwd",
+            "definition": "Last Password Change - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.dept",
+            "definition": "Department - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.emptype",
+            "definition": "Employee Type - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.ll",
+            "definition": "Last Login - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.mgr",
+            "definition": "Manager - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.name",
+            "definition": "Full Name - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.perm",
+            "definition": "Permissions - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "identity.svcacct",
+            "definition": "Service Account - RSA Identity Governance and Lifecycle"
+        },
+        {
+            "key": "info",
+            "definition": "Info"
+        },
+        {
+            "key": "interface",
+            "definition": "Interface"
+        },
+        {
+            "key": "inv.all",
+            "definition": "All Investigation Keys"
+        },
+        {
+            "key": "inv.category",
+            "definition": "Investigation Category"
+        },
+        {
+            "key": "inv.context",
+            "definition": "Investigation Context"
+        },
+        {
+            "key": "ioc",
+            "definition": "Indicators of Compromise"
+        },
+        {
+            "key": "ioc.score",
+            "definition": "IOC Score"
+        },
+        {
+            "key": "ip.addr",
+            "definition": "IP Address"
+        },
+        {
+            "key": "ip.all",
+            "definition": "All IPv4 Keys"
+        },
+        {
+            "key": "ip.dst",
+            "definition": "Destination IP address"
+        },
+        {
+            "key": "ip.dstport",
+            "definition": "Destination Port"
+        },
+        {
+            "key": "ip.orig",
+            "definition": "IP Address Originating"
+        },
+        {
+            "key": "ip.proto",
+            "definition": "IP Protocol"
+        },
+        {
+            "key": "ip.src",
+            "definition": "Source IP Address"
+        },
+        {
+            "key": "ip.srcport",
+            "definition": "Source Port"
+        },
+        {
+            "key": "ipv6.all",
+            "definition": "All IPv6 Keys"
+        },
+        {
+            "key": "ipv6.dst",
+            "definition": "Destination IPv6 address"
+        },
+        {
+            "key": "ipv6.orig",
+            "definition": "IP Address v6 Originating"
+        },
+        {
+            "key": "ipv6.proto",
+            "definition": "IP V6 Protocol"
+        },
+        {
+            "key": "ipv6.src",
+            "definition": "Source IPv6 Address"
+        },
+        {
+            "key": "ja3",
+            "definition": "JA3 Fingerprint"
+        },
+        {
+            "key": "ja3s",
+            "definition": "JA3S Fingerprint"
+        },
+        {
+            "key": "ja4",
+            "definition": "JA4 Fingerprint"
+        },
+        {
+            "key": "language",
+            "definition": "Languages"
+        },
+        {
+            "key": "latdec",
+            "definition": "Decimal Latitude"
+        },
+        {
+            "key": "latdec.dst",
+            "definition": "Destination Latitude"
+        },
+        {
+            "key": "latdec.src",
+            "definition": "Source Latitude"
+        },
+        {
+            "key": "lc.cid",
+            "definition": "Collector ID"
+        },
+        {
+            "key": "lifetime",
+            "definition": "Session Lifetime"
+        },
+        {
+            "key": "link",
+            "definition": "Link to Data"
+        },
+        {
+            "key": "loc.desc",
+            "definition": "Location"
+        },
+        {
+            "key": "location",
+            "definition": "Location"
+        },
+        {
+            "key": "location.dst",
+            "definition": "Destination Location"
+        },
+        {
+            "key": "location.src",
+            "definition": "Source Location"
+        },
+        {
+            "key": "logon.type",
+            "definition": "Logon Type"
+        },
+        {
+            "key": "logon.type.desc",
+            "definition": "Description of Logon Type"
+        },
+        {
+            "key": "longdec",
+            "definition": "Decimal Longitude"
+        },
+        {
+            "key": "longdec.dst",
+            "definition": "Destination Longitude"
+        },
+        {
+            "key": "longdec.src",
+            "definition": "Source Longitude"
+        },
+        {
+            "key": "mail.id",
+            "definition": "Mail ID"
+        },
+        {
+            "key": "match",
+            "definition": "Match Search Item"
+        },
+        {
+            "key": "mcb.req",
+            "definition": "Most Common Byte Request"
+        },
+        {
+            "key": "mcb.res",
+            "definition": " Most Common Byte Response"
+        },
+        {
+            "key": "mcbc.req",
+            "definition": "Most Common Byte Count Request"
+        },
+        {
+            "key": "mcbc.res",
+            "definition": "Most Common Byte Count Response"
+        },
+        {
+            "key": "medium",
+            "definition": "Medium"
+        },
+        {
+            "key": "msg",
+            "definition": "Message"
+        },
+        {
+            "key": "msg.id",
+            "definition": "Message ID"
+        },
+        {
+            "key": "netname",
+            "definition": "Network Name"
+        },
+        {
+            "key": "network.port",
+            "definition": "Network Port"
+        },
+        {
+            "key": "network.service",
+            "definition": "Network Service"
+        },
+        {
+            "key": "new.callback_id",
+            "definition": "NEW Callback Id"
+        },
+        {
+            "key": "obj.name",
+            "definition": "Object Name"
+        },
+        {
+            "key": "obj.type",
+            "definition": "Object Type"
+        },
+        {
+            "key": "org",
+            "definition": "Organization"
+        },
+        {
+            "key": "org.dst",
+            "definition": "Destinaton Organization"
+        },
+        {
+            "key": "org.src",
+            "definition": "Source Organization"
+        },
+        {
+            "key": "orig_ip",
+            "definition": "Originating IP Address"
+        },
+        {
+            "key": "OS",
+            "definition": "Operating System"
+        },
+        {
+            "key": "outcome.all",
+            "definition": "All Outcome Keys"
+        },
+        {
+            "key": "owner",
+            "definition": "Owner"
+        },
+        {
+            "key": "packets",
+            "definition": "Session Packet Count"
+        },
+        {
+            "key": "paddr",
+            "definition": "Device Address"
+        },
+        {
+            "key": "param",
+            "definition": "Param"
+        },
+        {
+            "key": "param.all",
+            "definition": "All Parameter Keys"
+        },
+        {
+            "key": "param.dst",
+            "definition": "Target Parameter"
+        },
+        {
+            "key": "param.src",
+            "definition": "Source Parameter"
+        },
+        {
+            "key": "parse.error",
+            "definition": "Parse Error"
+        },
+        {
+            "key": "password",
+            "definition": "Password"
+        },
+        {
+            "key": "payload",
+            "definition": "Payload Size"
+        },
+        {
+            "key": "payload.req",
+            "definition": "Payload Size Request"
+        },
+        {
+            "key": "payload.res",
+            "definition": "Payload Size Response"
+        },
+        {
+            "key": "policy.id",
+            "definition": "Policy ID"
+        },
+        {
+            "key": "policy.name",
+            "definition": "Policy Name"
+        },
+        {
+            "key": "port",
+            "definition": "Port Generic"
+        },
+        {
+            "key": "port.all",
+            "definition": "All Port Keys"
+        },
+        {
+            "key": "port.dst",
+            "definition": "Non-Protocol Specific Destination Port"
+        },
+        {
+            "key": "port.dst.all",
+            "definition": "All Destination Port Keys"
+        },
+        {
+            "key": "port.src",
+            "definition": "Non-Protocol Specific Source Port"
+        },
+        {
+            "key": "port.src.all",
+            "definition": "All Source Port Keys"
+        },
+        {
+            "key": "port.trans.dst",
+            "definition": "Port Translated Destination"
+        },
+        {
+            "key": "port.trans.src",
+            "definition": "Port Translated Source"
+        },
+        {
+            "key": "process",
+            "definition": "Process"
+        },
+        {
+            "key": "process.id",
+            "definition": "Process ID"
+        },
+        {
+            "key": "process.vid.dst",
+            "definition": "Endpoint Target Process ID"
+        },
+        {
+            "key": "process.vid.src",
+            "definition": "Endpoint Source Process ID"
+        },
+        {
+            "key": "protocol",
+            "definition": "Protocol"
+        },
+        {
+            "key": "query",
+            "definition": "Web Query"
+        },
+        {
+            "key": "rbytes",
+            "definition": "Bytes Received"
+        },
+        {
+            "key": "reference.id",
+            "definition": "Reference ID"
+        },
+        {
+            "key": "reference.id1",
+            "definition": "Reference Id1"
+        },
+        {
+            "key": "reference.id2",
+            "definition": "Reference Id2"
+        },
+        {
+            "key": "referer",
+            "definition": "Referer"
+        },
+        {
+            "key": "registry.key",
+            "definition": "Registry Key"
+        },
+        {
+            "key": "registry.value",
+            "definition": "Registry Value"
+        },
+        {
+            "key": "result",
+            "definition": "Result"
+        },
+        {
+            "key": "result.code",
+            "definition": "Result Code"
+        },
+        {
+            "key": "rid",
+            "definition": "Remote Session ID"
+        },
+        {
+            "key": "risk",
+            "definition": "Risk"
+        },
+        {
+            "key": "risk.info",
+            "definition": "Risk: Informational"
+        },
+        {
+            "key": "risk.num",
+            "definition": "Risk Number"
+        },
+        {
+            "key": "risk.suspicious",
+            "definition": "Risk: Suspicous"
+        },
+        {
+            "key": "risk.warning",
+            "definition": "Risk: Warning"
+        },
+        {
+            "key": "rpackets",
+            "definition": "Session Retransmits"
+        },
+        {
+            "key": "rpayload",
+            "definition": "Session Retransmit Payload"
+        },
+        {
+            "key": "rule",
+            "definition": "Rule"
+        },
+        {
+            "key": "rule.name",
+            "definition": "RuleName"
+        },
+        {
+            "key": "rule.uid",
+            "definition": "Rule ID"
+        },
+        {
+            "key": "search.text",
+            "definition": "Search Engine Queries"
+        },
+        {
+            "key": "server",
+            "definition": "Application"
+        },
+        {
+            "key": "server.id",
+            "definition": "Server ID"
+        },
+        {
+            "key": "service",
+            "definition": "Service Type"
+        },
+        {
+            "key": "service.name",
+            "definition": "Service Name"
+        },
+        {
+            "key": "session.split",
+            "definition": "Session Split Count"
+        },
+        {
+            "key": "sessionid",
+            "definition": "Session ID"
+        },
+        {
+            "key": "severity",
+            "definition": "Severity"
+        },
+        {
+            "key": "sig.id",
+            "definition": "Signature ID"
+        },
+        {
+            "key": "sig.name",
+            "definition": "Signature Name"
+        },
+        {
+            "key": "sinterface",
+            "definition": "Source Interface"
+        },
+        {
+            "key": "site.cat",
+            "definition": "Site Category"
+        },
+        {
+            "key": "size ",
+            "definition": "Data Size"
+        },
+        {
+            "key": "sld",
+            "definition": "Second Level Domain"
+        },
+        {
+            "key": "sourcefile",
+            "definition": "Source Filename"
+        },
+        {
+            "key": "sql",
+            "definition": "SQL Query"
+        },
+        {
+            "key": "ssl.ca",
+            "definition": "SSL CA"
+        },
+        {
+            "key": "ssl.subject",
+            "definition": "SSL Subject"
+        },
+        {
+            "key": "starttime",
+            "definition": "Time Start"
+        },
+        {
+            "key": "stransaddr",
+            "definition": "Source Translated Address"
+        },
+        {
+            "key": "stransport",
+            "definition": "Translated Source Port"
+        },
+        {
+            "key": "streams",
+            "definition": "Session Streams"
+        },
+        {
+            "key": "subject",
+            "definition": "Subject"
+        },
+        {
+            "key": "task.name",
+            "definition": "Task Name"
+        },
+        {
+            "key": "tcp.dstport",
+            "definition": "TCP Destination Port"
+        },
+        {
+            "key": "tcp.flags",
+            "definition": "TCP Flags"
+        },
+        {
+            "key": "tcp.flags.desc",
+            "definition": "TCP Flags Description"
+        },
+        {
+            "key": "tcp.srcport",
+            "definition": "TCP Source Port"
+        },
+        {
+            "key": "tcpfalgs",
+            "definition": "TCP Flags"
+        },
+        {
+            "key": "threat.category",
+            "definition": "Threat Category"
+        },
+        {
+            "key": "threat.desc",
+            "definition": "Threat Description"
+        },
+        {
+            "key": "threat.source",
+            "definition": "Threat Source"
+        },
+        {
+            "key": "timezone",
+            "definition": "Time Zone"
+        },
+        {
+            "key": "tld",
+            "definition": "Top Level Domains"
+        },
+        {
+            "key": "tls.extensionlen",
+            "definition": "TLS Extensions Length"
+        },
+        {
+            "key": "ubc.req",
+            "definition": "Unique Byte Count Request"
+        },
+        {
+            "key": "ubc.res",
+            "definition": "Unique Byte Count Response"
+        },
+        {
+            "key": "udp.dstport",
+            "definition": "UDP Target Port"
+        },
+        {
+            "key": "udp.srcport",
+            "definition": "UDP Source Port"
+        },
+        {
+            "key": "ueba.schema",
+            "definition": "UEBA Schema"
+        },
+        {
+            "key": "url",
+            "definition": "URL"
+        },
+        {
+            "key": "user",
+            "definition": "User Account"
+        },
+        {
+            "key": "user.agent",
+            "definition": "User Agent"
+        },
+        {
+            "key": "user.all",
+            "definition": "All User Keys"
+        },
+        {
+            "key": "user.dst",
+            "definition": "Destination User Account"
+        },
+        {
+            "key": "user.dst.hash",
+            "definition": "Destination Username Hash"
+        },
+        {
+            "key": "user.id",
+            "definition": "User Unique ID/Logon ID"
+        },
+        {
+            "key": "user.src",
+            "definition": "Source User Account"
+        },
+        {
+            "key": "user.src.hash",
+            "definition": "Source Username Hash"
+        },
+        {
+            "key": "username",
+            "definition": "User Account"
+        },
+        {
+            "key": "vendor",
+            "definition": "Vendor Name"
+        },
+        {
+            "key": "virusname",
+            "definition": "Virus Name"
+        },
+        {
+            "key": "web.domain",
+            "definition": "Web Domain"
+        },
+        {
+            "key": "web.method",
+            "definition": "Web Method"
+        },
+        {
+            "key": "web.referer",
+            "definition": "Web Referer"
+        },
+        {
+            "key": "web.root",
+            "definition": "Web Root"
+        },
+        {
+            "key": "wlan.channel",
+            "definition": "WLAN frequency channel"
+        },
+        {
+            "key": "wlan.ssid",
+            "definition": "WLAN Service Set Identifier"
+        },
+        {
+            "key": "word",
+            "definition": "Text Token"
+        },
+        {
+            "key": "zone.dst",
+            "definition": "Destination Zone"
+        },
+        {
+            "key": "zone.src",
+            "definition": "Source Zone"
+        }
+]
+}
