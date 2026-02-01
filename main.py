@@ -3,8 +3,102 @@ from unittest import result
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from vector import retriever, meta_retriever
+from incident_analyzer import IncidentAnalyzer
+import json
+from typing import Dict, Any, Union
  
 model = OllamaLLM(model="ALIENTELLIGENCE/cybersecuritythreatanalysisv2")
+incident_analyzer = IncidentAnalyzer()
+
+def is_incident_question(question: str) -> bool:
+    """Detect if the question is asking about incidents/alerts"""
+    incident_keywords = [
+        "incident", "alert", "what do", "what does", "meaning", "mean",
+        "escalate", "severity", "risk", "should i", "should we", 
+        "do i need", "what should", "urgent", "priority", "happen",
+        "what happened", "what is this", "explain this", "understand this"
+    ]
+    
+    question_lower = question.lower()
+    return any(keyword in question_lower for keyword in incident_keywords)
+
+def detect_incident_question_level(question: str) -> str:
+    """
+    Detect the required complexity level for incident questions.
+    L1: Basic understanding, meaning, escalation guidance
+    L2: Investigation steps, validation, technical details
+    L3: Threat hunting, advanced investigation, root cause
+    """
+    question_lower = question.lower()
+    
+    # L3 keywords for incidents
+    l3_incident_keywords = [
+        "threat hunt", "how to hunt", "how would you hunt", "hunting strategy",
+        "root cause", "detection strategy", "how to detect", "advanced analysis",
+        "deep investigation", "persistence", "evasion", "lateral movement hunting",
+        "forensic", "containment approach", "remediation strategy", "hardening",
+        "netwitness query", "siem query", "pivot", "correlate", "advanced pivot"
+    ]
+    
+    # L2 keywords for incidents
+    l2_incident_keywords = [
+        "investigate", "investigation", "how to investigate", "validate", 
+        "validation steps", "evidence", "check logs", "telemetry", "artifacts",
+        "step by step", "what to check", "where to look", "what data",
+        "correlation", "timeline", "basic investigation", "triage"
+    ]
+    
+    # Check for L3
+    for keyword in l3_incident_keywords:
+        if keyword in question_lower:
+            return "L3"
+    
+    # Check for L2
+    for keyword in l2_incident_keywords:
+        if keyword in question_lower:
+            return "L2"
+    
+    # Default to L1 for incident overview questions
+    return "L1"
+
+def analyze_incident(incident_data: Union[Dict[str, Any], str], analysis_level: str = "L1") -> str:
+    """
+    Analyze a security incident at the specified level (L1, L2, or L3).
+    
+    Args:
+        incident_data: Either a dict with incident data or JSON string
+        analysis_level: Analysis tier (L1, L2, or L3)
+    
+    Returns:
+        Analysis response string
+    """
+    # Parse JSON string if necessary
+    if isinstance(incident_data, str):
+        try:
+            incident_dict = json.loads(incident_data)
+        except json.JSONDecodeError:
+            return "Error: Invalid JSON incident data provided."
+    else:
+        incident_dict = incident_data
+    
+    # Validate required fields
+    if not isinstance(incident_dict, dict):
+        return "Error: Incident data must be a dictionary or valid JSON object."
+    
+    if "id" not in incident_dict:
+        return "Error: Incident data must contain an 'id' field."
+    
+    # Normalize level input
+    level = analysis_level.upper()
+    if level not in ["L1", "L2", "L3"]:
+        return f"Error: Invalid analysis level '{analysis_level}'. Please use L1, L2, or L3."
+    
+    # Get analysis from incident analyzer
+    try:
+        analysis = incident_analyzer.analyze_incident(incident_dict, level)
+        return analysis
+    except Exception as e:
+        return f"Error analyzing incident: {str(e)}"
  
 def detect_question_level(question: str) -> str:
     """Detect the complexity level of the question and return the appropriate analysis level."""
@@ -38,10 +132,11 @@ def detect_question_level(question: str) -> str:
     # Default to L1 for basic questions
     return "L1"
  
-def get_chatbot_response(question: str, user_level: str = None) -> str:
+def get_chatbot_response(question: str, user_level: str = None, incident_data: Union[Dict[str, Any], str] = None) -> str:
     """Get chatbot response for a given question.
    
     If user_level is provided, use that. Otherwise, auto-detect the question level.
+    If incident_data is provided, analyzes incident with tier awareness.
    
     Also checks if the user's level is sufficient for the question's required level.
     """
@@ -51,6 +146,43 @@ def get_chatbot_response(question: str, user_level: str = None) -> str:
     else:
         level = detect_question_level(question)
    
+    # INCIDENT QUERY HANDLING
+    if incident_data is not None:
+        # Check if this is an incident question
+        if is_incident_question(question):
+            # Detect the required tier for THIS incident question
+            required_tier = detect_incident_question_level(question)
+            
+            # Convert levels to numeric values for comparison
+            level_map = {"L1": 1, "L2": 2, "L3": 3}
+            user_level_num = level_map.get(level, 1)
+            required_tier_num = level_map.get(required_tier, 1)
+            
+            # Check privilege level for incident queries
+            if user_level_num < required_tier_num:
+                escalation_message = f"""**Authorization Required for Incident Analysis**
+ 
+Your current analyst level is **{level}**, but this incident question requires **{required_tier}** access.
+ 
+**What you're asking about**: {required_tier} tier incident analysis
+ 
+**Incident**: {incident_data.get('id', 'Unknown') if isinstance(incident_data, dict) else 'Provided Incident'}
+ 
+**Action Required:**
+- Contact your SOC manager or team lead
+- Request escalation to **{required_tier}** analyst level
+- Once approved, you'll be able to access this incident analysis
+ 
+**Current Access:**
+- Level {level}: Basic incident overview and escalation guidance
+- Level {required_tier}+: Restricted - requires escalation"""
+                return escalation_message
+            
+            # User has sufficient privileges - provide incident analysis
+            analysis = analyze_incident(incident_data, required_tier)
+            return analysis
+    
+    # REGULAR QUESTION HANDLING (non-incident)
     # Detect the REQUIRED level for this question
     required_level = detect_question_level(question)
    
